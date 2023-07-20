@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package AppForms;
 
 /**
@@ -147,13 +148,13 @@ public class MainForm extends javax.swing.JFrame {
         });
 
         drop_Size.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
-        drop_Size.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Item 2", "Item 3", "Item 4" }));
+        drop_Size.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "How big?", "200-300 sq. m", "300-400 sq. m", "400-500 sq. m", "500-600 sq. m" }));
 
         drop_Loc.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
-        drop_Loc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Item 2", "Item 3", "Item 4" }));
+        drop_Loc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Which block?", "Block 1", "Block 2", "Block 3", "Block 4", "Block 5" }));
 
         drop_Price.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
-        drop_Price.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Item 2", "Item 3", "Item 4" }));
+        drop_Price.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "How much?", "$10,000-$50,000", "$50,000-$100,000", "$100,000-$300,000", "$300,000-$600,000", " " }));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
