@@ -8,7 +8,9 @@ package AppForms;
 
 import Libs.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -18,6 +20,7 @@ public class MainForm extends javax.swing.JFrame {
 
     ReportForm repform = new ReportForm();
     SearchForm searchform = new SearchForm();
+    ViewForm viewform = new ViewForm();
     
     /**
      * Creates new form MainForm
@@ -42,10 +45,21 @@ public class MainForm extends javax.swing.JFrame {
             rowData[0] = lots.get(i).getSize() + " sq. m";
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = "$" + lots.get(i).getPrice();
-            rowData[3] = lots.get(i).getStatus();
             model.addRow(rowData);
             
         }
+        
+        // table sorter
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
+        
+        // sort values by numbers
+        sorter.setComparator(2, new Comparator<String>() {
+            public int compare(String s1, String s2) {
+                return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
+            }
+        });
+        
+        jTable_MyLots.setRowSorter(sorter);
         
     }
 
@@ -76,6 +90,7 @@ public class MainForm extends javax.swing.JFrame {
         drop_Size = new javax.swing.JComboBox<>();
         drop_Loc = new javax.swing.JComboBox<>();
         drop_Price = new javax.swing.JComboBox<>();
+        btn_View = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         btn_genRep = new javax.swing.JButton();
@@ -124,23 +139,23 @@ public class MainForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lot Size (Sq. m)", "Location", "Price", "Status"
+                "Lot Size (Sq. m)", "Location", "Price"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        jTable_MyLots.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable_MyLots);
         if (jTable_MyLots.getColumnModel().getColumnCount() > 0) {
             jTable_MyLots.getColumnModel().getColumn(0).setResizable(false);
             jTable_MyLots.getColumnModel().getColumn(1).setResizable(false);
             jTable_MyLots.getColumnModel().getColumn(2).setResizable(false);
-            jTable_MyLots.getColumnModel().getColumn(3).setResizable(false);
         }
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -212,6 +227,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        btn_View.setFont(new java.awt.Font("Fira Code", 1, 14)); // NOI18N
+        btn_View.setText("View all available lots");
+        btn_View.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ViewActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -226,7 +249,8 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(drop_Size, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(drop_Loc, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(drop_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(drop_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_View, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(130, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -234,21 +258,23 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(41, 41, 41)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(drop_Size, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGap(23, 23, 23)
                 .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(drop_Loc, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(drop_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addGap(27, 27, 27)
                 .addComponent(btn_SearchSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btn_View, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38))
         );
 
         jTabbedPane1.addTab("  Search  ", jPanel3);
@@ -287,7 +313,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap(192, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("  View all lots  ", jPanel5);
+        jTabbedPane1.addTab(" Lot report ", jPanel5);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -315,18 +341,21 @@ public class MainForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // search submit button, open SearchForm
     private void btn_SearchSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SearchSubmitActionPerformed
 
         searchform.setVisible(true);
         
     }//GEN-LAST:event_btn_SearchSubmitActionPerformed
 
+    // generate report button, open ReportForm
     private void btn_genRepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_genRepActionPerformed
 
         repform.setVisible(true);
         
     }//GEN-LAST:event_btn_genRepActionPerformed
 
+    // lot size dropdown
     private void drop_SizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drop_SizeActionPerformed
     
         String selectedItem = drop_Size.getSelectedItem().toString();
@@ -351,6 +380,7 @@ public class MainForm extends javax.swing.JFrame {
     
     }//GEN-LAST:event_drop_SizeActionPerformed
 
+    // lot location dropdown
     private void drop_LocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drop_LocActionPerformed
         
         String selectedItem = drop_Loc.getSelectedItem().toString();
@@ -378,6 +408,7 @@ public class MainForm extends javax.swing.JFrame {
         
     }//GEN-LAST:event_drop_LocActionPerformed
 
+    // lot price dropdown
     private void drop_PriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drop_PriceActionPerformed
         
         String selectedItem = drop_Price.getSelectedItem().toString();
@@ -402,6 +433,13 @@ public class MainForm extends javax.swing.JFrame {
 
         
     }//GEN-LAST:event_drop_PriceActionPerformed
+
+    // view all available lots, open ViewForm
+    private void btn_ViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ViewActionPerformed
+        
+        viewform.setVisible(true);
+        
+    }//GEN-LAST:event_btn_ViewActionPerformed
 
     /**
      * @param args the command line arguments
@@ -440,6 +478,7 @@ public class MainForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_SearchSubmit;
+    private javax.swing.JButton btn_View;
     private javax.swing.JButton btn_genRep;
     private javax.swing.JComboBox<String> drop_Loc;
     private javax.swing.JComboBox<String> drop_Price;
