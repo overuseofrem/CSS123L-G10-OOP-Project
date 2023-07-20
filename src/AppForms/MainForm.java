@@ -11,6 +11,9 @@ package AppForms;
  */
 public class MainForm extends javax.swing.JFrame {
 
+    ReportForm repform = new ReportForm();
+    SearchForm searchform = new SearchForm();
+    
     /**
      * Creates new form MainForm
      */
@@ -35,7 +38,7 @@ public class MainForm extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable_MyLots = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -43,8 +46,8 @@ public class MainForm extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         btn_SearchSubmit = new javax.swing.JButton();
         drop_Size = new javax.swing.JComboBox<>();
-        drop_Size1 = new javax.swing.JComboBox<>();
-        drop_Size2 = new javax.swing.JComboBox<>();
+        drop_Loc = new javax.swing.JComboBox<>();
+        drop_Price = new javax.swing.JComboBox<>();
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         btn_genRep = new javax.swing.JButton();
@@ -87,8 +90,8 @@ public class MainForm extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Fira Code", 0, 16)); // NOI18N
         jLabel2.setText("See all these lots? They're yours!");
 
-        jTable1.setFont(new java.awt.Font("Fira Code", 0, 14)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_MyLots.setFont(new java.awt.Font("Fira Code", 0, 14)); // NOI18N
+        jTable_MyLots.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -96,7 +99,7 @@ public class MainForm extends javax.swing.JFrame {
                 "Lot Size (Sq. m)", "Location", "Price", "Status"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTable_MyLots);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -146,11 +149,11 @@ public class MainForm extends javax.swing.JFrame {
         drop_Size.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         drop_Size.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Item 2", "Item 3", "Item 4" }));
 
-        drop_Size1.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
-        drop_Size1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Item 2", "Item 3", "Item 4" }));
+        drop_Loc.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
+        drop_Loc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Item 2", "Item 3", "Item 4" }));
 
-        drop_Size2.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
-        drop_Size2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Item 2", "Item 3", "Item 4" }));
+        drop_Price.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
+        drop_Price.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -165,8 +168,8 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(btn_SearchSubmit)
                     .addComponent(jLabel4)
                     .addComponent(drop_Size, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(drop_Size1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(drop_Size2, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(drop_Loc, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(drop_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(130, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -181,11 +184,11 @@ public class MainForm extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(drop_Size1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(drop_Loc, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(drop_Size2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(drop_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
                 .addComponent(btn_SearchSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31))
@@ -257,11 +260,15 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_SearchSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SearchSubmitActionPerformed
-        // TODO add your handling code here:
+
+        searchform.setVisible(true);
+        
     }//GEN-LAST:event_btn_SearchSubmitActionPerformed
 
     private void btn_genRepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_genRepActionPerformed
-        // TODO add your handling code here:
+
+        repform.setVisible(true);
+        
     }//GEN-LAST:event_btn_genRepActionPerformed
 
     /**
@@ -302,9 +309,9 @@ public class MainForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_SearchSubmit;
     private javax.swing.JButton btn_genRep;
+    private javax.swing.JComboBox<String> drop_Loc;
+    private javax.swing.JComboBox<String> drop_Price;
     private javax.swing.JComboBox<String> drop_Size;
-    private javax.swing.JComboBox<String> drop_Size1;
-    private javax.swing.JComboBox<String> drop_Size2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -320,6 +327,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable_MyLots;
     // End of variables declaration//GEN-END:variables
 }
