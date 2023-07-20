@@ -5,17 +5,58 @@
  */
 package AppForms;
 
+import Libs.*;
+import java.util.ArrayList;
+import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author ASUS
  */
 public class ReportForm extends javax.swing.JFrame {
+    
+    
 
     /**
      * Creates new form ReportForm
      */
     public ReportForm() {
         initComponents();
+        addRowToTable(); // display table
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // closes only current window
+    }
+    
+    public ArrayList listOfLots() {
+        
+        ArrayList<Lot> lots = new ArrayList<> ();
+    
+        lots = new ArrayList<>();
+        
+        // lot values
+        
+        // block 1
+        lots.add(new Lot(250, "Block 1", 50000, "Available"));
+        
+        return lots;
+    }
+    
+    public void addRowToTable() {
+        
+        DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();
+        ArrayList<Lot> lots = listOfLots();
+        Object rowData[] = new Object[100];
+        
+        for (int i = 0; i < lots.size(); i++) {
+            
+            rowData[0] = lots.get(i).getSize() + " sq. m";
+            rowData[1] = lots.get(i).getBlock();
+            rowData[2] = "$" + lots.get(i).getPrice();
+            rowData[3] = lots.get(i).getStatus();
+            model.addRow(rowData);
+            
+        }
+        
     }
 
     /**

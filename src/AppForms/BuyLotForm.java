@@ -5,29 +5,38 @@
 package AppForms;
 import Libs.Lot;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 /**
  *
  * @author espirituwong
  */
 public class BuyLotForm extends javax.swing.JPanel {
 
-    private ArrayList<Lot> availableLots;
-
+//    private ArrayList<Lot> availableLots;
+    
     /**
      * Creates new form BuyLotPanel
      */
-   public BuyLotForm(ArrayList<Lot> availableLots) {
-        this.availableLots = availableLots;
+    
+    public BuyLotForm(ArrayList<Lot> availableLots) {
         initComponents();
-        populateLotsChoice();
-    }
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // closes only current window
 
-    private void populateLotsChoice() {
-        for (Lot lot : availableLots) {
-            choice1.add(lot.getLocation());
-        }
-    }
+    }    
+        
+//    public BuyLotForm(ArrayList<Lot> availableLots) {
+//      this.availableLots = availableLots;
+//        initComponents();
+//        populateLotsChoice();
+//    }
+
+//    private void populateLotsChoice() {
+//        for (Lot lot : availableLots) {
+//            choice1.add(lot.getLocation());
+//        }
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,21 +47,35 @@ public class BuyLotForm extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        choice1 = new java.awt.Choice();
-        Buy = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        btn_ReserveLot = new javax.swing.JButton();
+        btn_BuyLot = new javax.swing.JButton();
+        btn_ExitLot = new javax.swing.JButton();
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(24, 24, 24));
-        jLabel1.setText("BUY LOTS!!!");
-        jLabel1.setMaximumSize(new java.awt.Dimension(61, 61));
-        jLabel1.setName(""); // NOI18N
-        jLabel1.setPreferredSize(new java.awt.Dimension(452, 402));
+        jLabel2.setFont(new java.awt.Font("Fira Code", 0, 18)); // NOI18N
+        jLabel2.setText("Are you sure you want this lot?");
 
-        Buy.setText("BUY");
-        Buy.addActionListener(new java.awt.event.ActionListener() {
+        btn_ReserveLot.setFont(new java.awt.Font("Fira Code", 1, 14)); // NOI18N
+        btn_ReserveLot.setText("Reserve Lot");
+        btn_ReserveLot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BuyActionPerformed(evt);
+                btn_ReserveLotActionPerformed(evt);
+            }
+        });
+
+        btn_BuyLot.setFont(new java.awt.Font("Fira Code", 1, 14)); // NOI18N
+        btn_BuyLot.setText("Buy lot");
+        btn_BuyLot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_BuyLotActionPerformed(evt);
+            }
+        });
+
+        btn_ExitLot.setFont(new java.awt.Font("Fira Code", 1, 14)); // NOI18N
+        btn_ExitLot.setText("No, exit");
+        btn_ExitLot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ExitLotActionPerformed(evt);
             }
         });
 
@@ -61,39 +84,56 @@ public class BuyLotForm extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addComponent(choice1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(158, 158, 158)
-                        .addComponent(Buy))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(134, 134, 134)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addGap(68, 68, 68)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(btn_ExitLot, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_ReserveLot, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_BuyLot, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(76, 76, 76)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(choice1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Buy)
-                .addGap(159, 159, 159))
+                .addGap(69, 69, 69)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addComponent(btn_BuyLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btn_ReserveLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btn_ExitLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(81, 81, 81))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyActionPerformed
+    // reserve lot btn
+    private void btn_ReserveLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReserveLotActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_BuyActionPerformed
+    }//GEN-LAST:event_btn_ReserveLotActionPerformed
+
+    // buy lot btn
+    private void btn_BuyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuyLotActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_BuyLotActionPerformed
+
+    // exit btn
+    private void btn_ExitLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExitLotActionPerformed
+        
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        frame.dispose();
+        
+    }//GEN-LAST:event_btn_ExitLotActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Buy;
-    private java.awt.Choice choice1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btn_BuyLot;
+    private javax.swing.JButton btn_ExitLot;
+    private javax.swing.JButton btn_ReserveLot;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
+
+    private void setDefaultCloseOperation(int DISPOSE_ON_CLOSE) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

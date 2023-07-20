@@ -5,6 +5,8 @@
  */
 package AppForms;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author ASUS
@@ -16,7 +18,10 @@ public class SearchForm extends javax.swing.JFrame {
      */
     public SearchForm() {
         initComponents();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // closes only current window
     }
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
