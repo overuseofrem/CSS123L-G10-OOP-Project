@@ -99,8 +99,22 @@ public class MainForm extends javax.swing.JFrame {
             new String [] {
                 "Lot Size (Sq. m)", "Location", "Price", "Status"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTable_MyLots);
+        if (jTable_MyLots.getColumnModel().getColumnCount() > 0) {
+            jTable_MyLots.getColumnModel().getColumn(0).setResizable(false);
+            jTable_MyLots.getColumnModel().getColumn(1).setResizable(false);
+            jTable_MyLots.getColumnModel().getColumn(2).setResizable(false);
+            jTable_MyLots.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -253,23 +267,22 @@ public class MainForm extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                        .addGap(33, 33, 33)
+                        .addComponent(jLabel1)))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(45, 45, 45)
+                .addGap(43, 43, 43)
                 .addComponent(jLabel1)
-                .addGap(28, 28, 28)
+                .addGap(30, 30, 30)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         pack();
@@ -304,6 +317,9 @@ public class MainForm extends javax.swing.JFrame {
             case "500-600 sq. m":
                 // add "500-600 sq. m" to filter() criteria
                 break;
+            default: // no input channge
+                // show all
+                break;
         }
     
     }//GEN-LAST:event_drop_SizeActionPerformed
@@ -328,6 +344,9 @@ public class MainForm extends javax.swing.JFrame {
             case "Block 5":
                 // add "Block 5" to filter() criteria
                 break;
+            default: // no input channge
+                // show all
+                break;
         }
         
     }//GEN-LAST:event_drop_LocActionPerformed
@@ -348,6 +367,9 @@ public class MainForm extends javax.swing.JFrame {
                 break;
             case "$300,000-$600,000":
                 // add "$300,000-$600,000" to filter() criteria
+                break;
+            default: // no input channge
+                // show all
                 break;
         }
 
