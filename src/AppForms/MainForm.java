@@ -6,6 +6,10 @@
 
 package AppForms;
 
+import Libs.*;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author ASUS
@@ -20,6 +24,29 @@ public class MainForm extends javax.swing.JFrame {
      */
     public MainForm() {
         initComponents();
+        displayTable(); // display table
+    }
+    
+    // 
+    public void displayTable() {
+        
+        DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();
+        
+        ReportForm reportForm = new ReportForm();
+        ArrayList<Lot> lots = reportForm.getList();
+        
+        Object rowData[] = new Object[100];
+        
+        for (int i = 0; i < lots.size(); i++) {
+            
+            rowData[0] = lots.get(i).getSize() + " sq. m";
+            rowData[1] = lots.get(i).getBlock();
+            rowData[2] = "$" + lots.get(i).getPrice();
+            rowData[3] = lots.get(i).getStatus();
+            model.addRow(rowData);
+            
+        }
+        
     }
 
     /**

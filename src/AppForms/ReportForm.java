@@ -16,20 +16,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ReportForm extends javax.swing.JFrame {
     
-    
+    private ArrayList<Lot> lots = new ArrayList<> ();
 
     /**
      * Creates new form ReportForm
      */
     public ReportForm() {
         initComponents();
-        addRowToTable(); // display table
+        displayTable(); // display table
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // closes only current window
     }
     
     public ArrayList listOfLots() {
-        
-        ArrayList<Lot> lots = new ArrayList<> ();
     
         lots = new ArrayList<>();
         
@@ -76,7 +74,7 @@ public class ReportForm extends javax.swing.JFrame {
             lots.add(new Lot(430, "Block 2", 130000, "Available"));
             lots.add(new Lot(210, "Block 2", 55000, "Available"));
             lots.add(new Lot(440, "Block 2", 81000, "Reserved"));
-            lots.add(new Lot(3000, "Block 2", 10000, "Available"));
+            lots.add(new Lot(300, "Block 2", 10000, "Available"));
             lots.add(new Lot(200, "Block 2", 9000, "Available"));
         
         // block 3
@@ -152,7 +150,12 @@ public class ReportForm extends javax.swing.JFrame {
         return lots;
     }
     
-    public void addRowToTable() {
+    // getList
+    public ArrayList<Lot> getList() {
+        return lots;
+    }
+    
+    public void displayTable() {
         
         DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();
         ArrayList<Lot> lots = listOfLots();
