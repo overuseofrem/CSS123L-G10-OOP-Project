@@ -1,18 +1,21 @@
-package Libs;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package Libs;
+
+import java.util.ArrayList;
 
 /**
  *
- * @author Group 10
+ * @author ASUS
  */
-public interface LotObserver {
+public interface Client {
     
-    // methods
-    void update(Lot lot); //check this
+    void buyLot(ArrayList<Lot> lots);
+    
+    void reserveLot(ArrayList<Lot> lots);
+    
     
 }

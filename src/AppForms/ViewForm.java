@@ -31,10 +31,10 @@ public class ViewForm extends javax.swing.JFrame {
     public void displayTable() {
         
         DefaultTableModel model = (DefaultTableModel) jTable_View.getModel();
-                
-        ReportForm reportForm = new ReportForm();
-        ArrayList<Lot> lots = reportForm.getList();
-        
+
+        ConcreteClient lotlist = new ConcreteClient();
+        ArrayList<Lot> lots = lotlist.listOfLots();
+
         Object rowData[] = new Object[100];
         
         for (int i = 0; i < lots.size(); i++) {

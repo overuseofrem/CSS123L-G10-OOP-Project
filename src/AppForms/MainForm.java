@@ -9,7 +9,9 @@ package AppForms;
 import Libs.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 /**
@@ -35,8 +37,8 @@ public class MainForm extends javax.swing.JFrame {
         
         DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();
         
-        ReportForm reportForm = new ReportForm();
-        ArrayList<Lot> lots = reportForm.getList();
+        ConcreteClient lotlist = new ConcreteClient();
+        ArrayList<Lot> lots = lotlist.listOfLots();
         
         Object rowData[] = new Object[100];
         
@@ -45,19 +47,27 @@ public class MainForm extends javax.swing.JFrame {
             rowData[0] = lots.get(i).getSize() + " sq. m";
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = "$" + lots.get(i).getPrice();
+            rowData[3] = lots.get(i).isOwn();
             model.addRow(rowData);
             
         }
         
-        // table sorter
+                // table sorter
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
         
+        // hide 'Own?' column
+        TableColumnModel columnModel = jTable_MyLots.getColumnModel();
+        columnModel.removeColumn(columnModel.getColumn(3));
+
         // sort values by numbers
         sorter.setComparator(2, new Comparator<String>() {
             public int compare(String s1, String s2) {
                 return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
             }
         });
+        
+        // show only lots where isOwn = true
+        sorter.setRowFilter(RowFilter.regexFilter(Boolean.toString(true), 3));
         
         jTable_MyLots.setRowSorter(sorter);
         
@@ -139,11 +149,11 @@ public class MainForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lot Size (Sq. m)", "Location", "Price"
+                "Lot Size (Sq. m)", "Location", "Price", "Own?"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -156,6 +166,7 @@ public class MainForm extends javax.swing.JFrame {
             jTable_MyLots.getColumnModel().getColumn(0).setResizable(false);
             jTable_MyLots.getColumnModel().getColumn(1).setResizable(false);
             jTable_MyLots.getColumnModel().getColumn(2).setResizable(false);
+            jTable_MyLots.getColumnModel().getColumn(3).setResizable(false);
         }
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -326,7 +337,7 @@ public class MainForm extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(jLabel1)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

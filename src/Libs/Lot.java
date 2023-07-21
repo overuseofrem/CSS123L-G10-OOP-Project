@@ -1,12 +1,13 @@
-package Libs;
-
-import java.util.ArrayList;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+package Libs;
+
+import java.util.ArrayList;
+
 
 /**
  *
@@ -20,6 +21,8 @@ public class Lot {
     private int price; // amend "$". if interested in decimals, use [double]
     private String status;// "Available", "Sold", "Reserved"
     private boolean own; // user owns this lot?
+    
+    private ArrayList<Lot> lots = new ArrayList<> ();
    
     // constructor
     public Lot(int size, String block, int price, String status, boolean own) {
@@ -29,8 +32,10 @@ public class Lot {
         this.status = status;
         this.own = own;
     }
+
+    //////// methods ////////
     
-    // methods
+    // getters
     public int getSize() { // get lot size
         return size;
     }
@@ -47,16 +52,18 @@ public class Lot {
         return status;
     }
 
-    public void setStatus(String status) { // set lot status
-        this.status = status;              // use when buying/reserving
-    }                                      // call and use to modify
-
     public boolean isOwn() {               // check if user owns this lot
         return own;
-    }
-    
+}
+        
+    // setters
     public void setOwn(boolean own) { // set ownership
         this.own = own;               // used to display at MyLots table
     }                                 // call and use when 
     
+    public void setStatus(String status) { // set lot status
+    this.status = status;              // use when buying/reserving
+}                                      // call and use to modify
+        
+
 }
