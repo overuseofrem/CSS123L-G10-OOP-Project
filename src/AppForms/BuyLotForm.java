@@ -51,8 +51,14 @@ public class BuyLotForm extends javax.swing.JPanel {
         btn_ReserveLot = new javax.swing.JButton();
         btn_BuyLot = new javax.swing.JButton();
         btn_ExitLot = new javax.swing.JButton();
+        jtxt_Price = new javax.swing.JTextField();
+        jtxt_Size = new javax.swing.JTextField();
+        jtxt_Loc = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
-        jLabel2.setFont(new java.awt.Font("Fira Code", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Fira Code", 0, 20)); // NOI18N
         jLabel2.setText("Are you sure you want this lot?");
 
         btn_ReserveLot.setFont(new java.awt.Font("Fira Code", 1, 14)); // NOI18N
@@ -79,35 +85,80 @@ public class BuyLotForm extends javax.swing.JPanel {
             }
         });
 
+        jtxt_Price.setFont(new java.awt.Font("Fira Code", 2, 14)); // NOI18N
+        jtxt_Price.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jtxt_Price.setText("lot price here");
+
+        jtxt_Size.setFont(new java.awt.Font("Fira Code", 2, 14)); // NOI18N
+        jtxt_Size.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jtxt_Size.setText("lot size here");
+
+        jtxt_Loc.setFont(new java.awt.Font("Fira Code", 2, 14)); // NOI18N
+        jtxt_Loc.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jtxt_Loc.setText("lot loc here");
+
+        jLabel4.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
+        jLabel4.setText("Size");
+
+        jLabel5.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
+        jLabel5.setText("Location");
+
+        jLabel6.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
+        jLabel6.setText("Price");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(192, 192, 192)
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
                         .addComponent(btn_BuyLot, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_ReserveLot, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(167, 167, 167)
+                        .addGap(31, 31, 31)
+                        .addComponent(btn_ReserveLot, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(btn_ExitLot, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jtxt_Size, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtxt_Loc, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jtxt_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addComponent(jLabel4)
+                        .addGap(130, 130, 130)
+                        .addComponent(jLabel5)
+                        .addGap(122, 122, 122)
+                        .addComponent(jLabel6))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(76, 76, 76)
                         .addComponent(jLabel2)))
-                .addGap(42, 42, 42)
-                .addComponent(btn_ExitLot, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(107, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(49, 49, 49)
+                .addGap(47, 47, 47)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 215, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jtxt_Size, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtxt_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtxt_Loc, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_BuyLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_ReserveLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_ExitLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(138, 138, 138))
+                .addGap(58, 58, 58))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -135,6 +186,12 @@ public class BuyLotForm extends javax.swing.JPanel {
     private javax.swing.JButton btn_ExitLot;
     private javax.swing.JButton btn_ReserveLot;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JTextField jtxt_Loc;
+    private javax.swing.JTextField jtxt_Price;
+    private javax.swing.JTextField jtxt_Size;
     // End of variables declaration//GEN-END:variables
 
     private void setDefaultCloseOperation(int DISPOSE_ON_CLOSE) {

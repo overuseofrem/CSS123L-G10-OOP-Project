@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import javax.swing.RowFilter;
+import javax.swing.RowFilter.ComparisonType;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
@@ -86,9 +87,9 @@ public class MainForm extends javax.swing.JFrame {
         
         for (int i = 0; i < lots.size(); i++) {
             
-            rowData[0] = lots.get(i).getSize() + " sq. m";
+            rowData[0] = lots.get(i).getSize();
             rowData[1] = lots.get(i).getBlock();
-            rowData[2] = "$" + lots.get(i).getPrice();
+            rowData[2] = lots.get(i).getPrice();
             rowData[3] = lots.get(i).getStatus();
             model.addRow(rowData);
             
@@ -98,30 +99,35 @@ public class MainForm extends javax.swing.JFrame {
         // table sorter
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
         jTable_Search.setRowSorter(sorter);
-        
-        // sort values by numbers
-        sorter.setComparator(2, new Comparator<String>() {
-            public int compare(String s1, String s2) {
-                return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
-            }
-        });
-        
+     
         // filter array
         List<RowFilter<Object,Object>> filters = new ArrayList<>();
-            filters.add(0, RowFilter.regexFilter("", 0)); // size filter item
-            filters.add(1, RowFilter.regexFilter("", 1)); // loc filter item
-            filters.add(2, RowFilter.regexFilter("", 2)); // price filter item
-            filters.add(3, RowFilter.regexFilter("", 3)); // status filter item
+            // column filters
+            filters.add(0, RowFilter.numberFilter(ComparisonType.AFTER, 0, 0)); // size filter lower bound
+            filters.add(1, RowFilter.numberFilter(ComparisonType.BEFORE, 601, 0)); // size filter upper bount
+            filters.add(2, RowFilter.regexFilter("", 1)); // loc filter item
+            filters.add(3, RowFilter.numberFilter(ComparisonType.AFTER, 9999, 2)); // price filter lower bound
+            filters.add(4, RowFilter.numberFilter(ComparisonType.BEFORE, 600001, 2)); // price filter upper bount
+            filters.add(5, RowFilter.regexFilter("", 3)); // status filter item
 
+            
         // size filter    
         drop_Size.addActionListener((ActionEvent event) -> {
-            
-            
-            if (drop_Loc.getSelectedIndex() == 0) {
-                filters.set(0, RowFilter.regexFilter("", 0));
+            // if index == 0, show all; else apply filter
+            if (drop_Size.getSelectedIndex() == 0) {
+                filters.set(0, RowFilter.numberFilter(ComparisonType.AFTER, 0, 0));
+                filters.set(1, RowFilter.numberFilter(ComparisonType.BEFORE, 601, 0));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             } else {
-//                filters.set(0, RowFilter.regexFilter(drop_Size.getSelectedItem().toString(), 0));
+                // get Size input
+                String sizeQuery = drop_Size.getSelectedItem().toString();
+                // extract numbers and convert to int
+                String[] splitSize = sizeQuery.split("-");
+                int lowerSize = Integer.parseInt(splitSize[0]);
+                int upperSize = Integer.parseInt(splitSize[1].split(" ")[0]) + 1;
+                // plug converted values in and filter
+                filters.set(0, RowFilter.numberFilter(ComparisonType.AFTER, lowerSize, 0));
+                filters.set(1, RowFilter.numberFilter(ComparisonType.BEFORE, upperSize, 0));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });    
@@ -129,40 +135,45 @@ public class MainForm extends javax.swing.JFrame {
             
         // Location filter
         drop_Loc.addActionListener((ActionEvent event) -> {
-            
+            // if index == 0, show all; else apply filter
             if (drop_Loc.getSelectedIndex() == 0) {
-                filters.set(1, RowFilter.regexFilter("", 1));
+                filters.set(2, RowFilter.regexFilter("", 1));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             } else {
-                filters.set(1, RowFilter.regexFilter(drop_Loc.getSelectedItem().toString(), 1));
+                filters.set(2, RowFilter.regexFilter(drop_Loc.getSelectedItem().toString(), 1));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });
              
         // price filter
         drop_Price.addActionListener((ActionEvent event) -> {
-            
-            // if else hell
-            
+            // if index == 0, show all; else apply filter
             if (drop_Price.getSelectedIndex() == 0) {
-                filters.set(0, RowFilter.regexFilter("", 2));
+                filters.set(3, RowFilter.numberFilter(ComparisonType.AFTER, 9999, 2));
+                filters.set(4, RowFilter.numberFilter(ComparisonType.BEFORE, 600001, 2));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
-            } else if (drop_Price.getSelectedIndex() == 1) {
-//                filters.set(0, RowFilter.regexFilter(drop_Size.getSelectedItem().toString(), 2));
+            } else {
+                // get Price input
+                String priceQuery = drop_Price.getSelectedItem().toString();
+                // extract numbers and convert to int
+                String[] splitPrice = priceQuery.split("-");
+                int lowerPrice = Integer.parseInt(splitPrice[0].substring(1).replace(",", ""));
+                int upperPrice = Integer.parseInt(splitPrice[1].substring(1).replace(",", "")) + 1; 
+                // plug converted values in and filter
+                filters.set(3, RowFilter.numberFilter(ComparisonType.AFTER, lowerPrice, 2));
+                filters.set(4, RowFilter.numberFilter(ComparisonType.BEFORE, upperPrice, 2));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
-            
-            
         });
         
         // Status filter
         drop_Stat.addActionListener((ActionEvent event) -> {
-            
+            // if index == 0, show all; else apply filter
             if (drop_Stat.getSelectedIndex() == 0) {
-                filters.set(3, RowFilter.regexFilter("", 3));
+                filters.set(5, RowFilter.regexFilter("", 3));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             } else {
-                filters.set(3, RowFilter.regexFilter(drop_Stat.getSelectedItem().toString(), 3));
+                filters.set(5, RowFilter.regexFilter(drop_Stat.getSelectedItem().toString(), 3));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });
@@ -273,20 +284,20 @@ public class MainForm extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addGap(26, 26, 26)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
                 .addComponent(jLabel2)
-                .addGap(27, 27, 27)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("  My Lots  ", jPanel4);
@@ -336,7 +347,7 @@ public class MainForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lot Size (Sq. m)", "Location", "Price", "Status"
+                "Lot Size (Sq. m)", "Location", "Price (USD, $)", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -383,9 +394,9 @@ public class MainForm extends javax.swing.JFrame {
                         .addGap(117, 117, 117)
                         .addComponent(jLabel3))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 540, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(26, Short.MAX_VALUE))
+                        .addGap(23, 23, 23)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -413,7 +424,7 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(drop_Size, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(183, 183, 183))
+                .addGap(165, 165, 165))
         );
 
         jTabbedPane1.addTab("  Search  ", jPanel3);

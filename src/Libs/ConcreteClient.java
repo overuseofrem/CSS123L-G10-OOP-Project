@@ -161,6 +161,8 @@ public class ConcreteClient implements Client {
     @Override
     public void notifyClient() {
         
+        // add code
+        
     }
     
 }
