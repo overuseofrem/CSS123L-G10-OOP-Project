@@ -23,8 +23,8 @@ public class ConcreteClient implements Client {
     // lot values (20 lots per block, 100 lots in total)
 
     // block 1
-        lots.add(new Lot(250, "Block 1", 50000, "Reserved", true));
-        lots.add(new Lot(300, "Block 1", 70000, "Sold", true));
+        lots.add(new Lot(250, "Block 1", 50000, "Reserved", true)); // own is set to true for testing
+        lots.add(new Lot(300, "Block 1", 70000, "Sold", true)); // own is set to true for testing
         lots.add(new Lot(500, "Block 1", 69000, "Available", false));
         lots.add(new Lot(600, "Block 1", 500000, "Reserved", false));
         lots.add(new Lot(200, "Block 1", 12000, "Available", false));
