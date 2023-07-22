@@ -27,7 +27,7 @@ public class ReportForm extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // closes only current window
     }
     
-    public void displayTable() {
+    private void displayTable() {
         
         DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();
        
@@ -49,6 +49,7 @@ public class ReportForm extends javax.swing.JFrame {
         
         // table sorter
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
+        jTable_Report.setRowSorter(sorter);
         
         // sort values by numbers
         sorter.setComparator(2, new Comparator<String>() {
@@ -57,7 +58,7 @@ public class ReportForm extends javax.swing.JFrame {
             }
         });
         
-        jTable_Report.setRowSorter(sorter);
+        
         
     }
 

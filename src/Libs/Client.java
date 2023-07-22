@@ -17,5 +17,6 @@ public interface Client {
     
     void reserveLot(ArrayList<Lot> lots);
     
+    void notifyClient();
     
 }
