@@ -8,7 +8,6 @@ package AppForms;
 
 import Libs.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -309,11 +308,6 @@ public class MainForm extends javax.swing.JFrame {
 
         drop_Loc.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         drop_Loc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Where?", "Block 1", "Block 2", "Block 3", "Block 4", "Block 5" }));
-        drop_Loc.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                drop_LocItemStateChanged(evt);
-            }
-        });
 
         drop_Price.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         drop_Price.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "How much?", "$10,000-$50,000", "$50,000-$100,000", "$100,000-$300,000", "$300,000-$600,000" }));
@@ -332,11 +326,6 @@ public class MainForm extends javax.swing.JFrame {
 
         drop_Stat.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         drop_Stat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Available" }));
-        drop_Stat.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                drop_StatItemStateChanged(evt);
-            }
-        });
 
         jLabel10.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         jLabel10.setText("Status");
@@ -505,98 +494,6 @@ public class MainForm extends javax.swing.JFrame {
         repform.setVisible(true);
         
     }//GEN-LAST:event_btn_genRepActionPerformed
-
-    private void drop_LocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_drop_LocItemStateChanged
-        
-//        DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
-//       
-//        ConcreteClient lotlist = new ConcreteClient();
-//        ArrayList<Lot> lots = lotlist.listOfLots();
-//        
-//        Object rowData[] = new Object[100];
-//        
-//        for (int i = 0; i < lots.size(); i++) {
-//            
-//            rowData[0] = lots.get(i).getSize() + " sq. m";
-//            rowData[1] = lots.get(i).getBlock();
-//            rowData[2] = "$" + lots.get(i).getPrice();
-//            rowData[3] = lots.get(i).getStatus();
-//            model.addRow(rowData);
-//            
-//        }
-//        
-//        // table sorter
-//        TableRowSorter<DefaultTableModel> sortLoc = new TableRowSorter<> (model);
-//        jTable_Search.setRowSorter(sortLoc);
-//        
-//        // sort values by numbers
-//        sortLoc.setComparator(2, new Comparator<String>() {
-//            public int compare(String s1, String s2) {
-//                return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
-//            }
-//        });
-//        
-//        String locQuery = drop_Loc.getSelectedItem().toString();
-//        
-//        switch (locQuery) {
-//            
-//            case "Block 1":
-//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 1", 1));
-//                break;
-//            case "Block 2":
-//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 2", 1));
-//                break;
-//            case "Block 3":
-//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 3", 1));
-//                break;
-//            case "Block 4":
-//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 4", 1));
-//                break;
-//            case "Block 5":
-//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 5", 1));
-//                break;    
-//        }
-        
-    }//GEN-LAST:event_drop_LocItemStateChanged
-
-    private void drop_StatItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_drop_StatItemStateChanged
-        
-//        DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
-//       
-//        ConcreteClient lotlist = new ConcreteClient();
-//        ArrayList<Lot> lots = lotlist.listOfLots();
-//        
-//        Object rowData[] = new Object[100];
-//        
-//        for (int i = 0; i < lots.size(); i++) {
-//            
-//            rowData[0] = lots.get(i).getSize() + " sq. m";
-//            rowData[1] = lots.get(i).getBlock();
-//            rowData[2] = "$" + lots.get(i).getPrice();
-//            rowData[3] = lots.get(i).getStatus();
-//            model.addRow(rowData);
-//            
-//        }
-//        
-//        // table sorter
-//        TableRowSorter<DefaultTableModel> sortStat = new TableRowSorter<> (model);
-//        jTable_Search.setRowSorter(sortStat);
-//        
-//        // sort values by numbers
-//        sortStat.setComparator(2, new Comparator<String>() {
-//            public int compare(String s1, String s2) {
-//                return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
-//            }
-//        });
-//        
-//        String statQuery = drop_Stat.getSelectedItem().toString();
-//        
-//        if (statQuery == "Available") {
-//                sortStat.setRowFilter(RowFilter.regexFilter("Available", 3));
-//        } else
-//            jTable_Search.setRowSorter(sortStat);
-        
-    }//GEN-LAST:event_drop_StatItemStateChanged
 
     /**
      * @param args the command line arguments
