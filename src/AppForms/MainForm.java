@@ -121,7 +121,7 @@ public class MainForm extends javax.swing.JFrame {
                 filters.set(0, RowFilter.regexFilter("", 0));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             } else {
-                filters.set(0, RowFilter.regexFilter(drop_Size.getSelectedItem().toString(), 0));
+//                filters.set(0, RowFilter.regexFilter(drop_Size.getSelectedItem().toString(), 0));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });    
@@ -148,7 +148,7 @@ public class MainForm extends javax.swing.JFrame {
                 filters.set(0, RowFilter.regexFilter("", 2));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             } else if (drop_Price.getSelectedIndex() == 1) {
-                
+//                filters.set(0, RowFilter.regexFilter(drop_Size.getSelectedItem().toString(), 2));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
             
