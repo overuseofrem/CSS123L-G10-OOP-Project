@@ -7,9 +7,11 @@
 package AppForms;
 
 import Libs.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
-import javax.swing.JComboBox;
+import java.util.List;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -20,7 +22,7 @@ import javax.swing.table.TableRowSorter;
  * @author ASUS
  */
 public class MainForm extends javax.swing.JFrame {
-
+    
     // initialize branching forms
     ReportForm repform = new ReportForm();
     
@@ -54,26 +56,25 @@ public class MainForm extends javax.swing.JFrame {
         }
         
         // table sorter
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
-        jTable_MyLots.setRowSorter(sorter);
+        TableRowSorter<DefaultTableModel> sortMyLot = new TableRowSorter<> (model);
+        jTable_MyLots.setRowSorter(sortMyLot);
         
         // hide 'Own?' column
         TableColumnModel columnModel = jTable_MyLots.getColumnModel();
         columnModel.removeColumn(columnModel.getColumn(3));
 
         // sort values by numbers
-        sorter.setComparator(2, new Comparator<String>() {
+        sortMyLot.setComparator(2, new Comparator<String>() {
             public int compare(String s1, String s2) {
                 return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
             }
         });
         
         // filter where isOwn = true
-        sorter.setRowFilter(RowFilter.regexFilter(Boolean.toString(true), 3));
+        sortMyLot.setRowFilter(RowFilter.regexFilter(Boolean.toString(true), 3));
         
     }
     
-    // table for Search
     private void displaySearchTable() {
         
         DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
@@ -96,6 +97,7 @@ public class MainForm extends javax.swing.JFrame {
         
         // table sorter
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
+        jTable_Search.setRowSorter(sorter);
         
         // sort values by numbers
         sorter.setComparator(2, new Comparator<String>() {
@@ -104,12 +106,67 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         
+        // filter array
+        List<RowFilter<Object,Object>> filters = new ArrayList<>();
+            filters.add(0, RowFilter.regexFilter("", 0)); // size filter item
+            filters.add(1, RowFilter.regexFilter("", 1)); // loc filter item
+            filters.add(2, RowFilter.regexFilter("", 2)); // price filter item
+            filters.add(3, RowFilter.regexFilter("", 3)); // status filter item
 
-//        sorter.setRowFilter(RowFilter.regexFilter("Available", 3));
-//        
-//        jTable_Search.setRowSorter(sorter);
+        // size filter    
+        drop_Size.addActionListener((ActionEvent event) -> {
+            
+            
+            if (drop_Loc.getSelectedIndex() == 0) {
+                filters.set(0, RowFilter.regexFilter("", 0));
+                sorter.setRowFilter(RowFilter.andFilter(filters));
+            } else {
+                filters.set(0, RowFilter.regexFilter(drop_Size.getSelectedItem().toString(), 0));
+                sorter.setRowFilter(RowFilter.andFilter(filters));
+            }
+        });    
+            
+            
+        // Location filter
+        drop_Loc.addActionListener((ActionEvent event) -> {
+            
+            if (drop_Loc.getSelectedIndex() == 0) {
+                filters.set(1, RowFilter.regexFilter("", 1));
+                sorter.setRowFilter(RowFilter.andFilter(filters));
+            } else {
+                filters.set(1, RowFilter.regexFilter(drop_Loc.getSelectedItem().toString(), 1));
+                sorter.setRowFilter(RowFilter.andFilter(filters));
+            }
+        });
+             
+        // price filter
+        drop_Price.addActionListener((ActionEvent event) -> {
+            
+            // if else hell
+            
+            if (drop_Price.getSelectedIndex() == 0) {
+                filters.set(0, RowFilter.regexFilter("", 2));
+                sorter.setRowFilter(RowFilter.andFilter(filters));
+            } else if (drop_Price.getSelectedIndex() == 1) {
+                
+                sorter.setRowFilter(RowFilter.andFilter(filters));
+            }
+            
+            
+        });
         
-        
+        // Status filter
+        drop_Stat.addActionListener((ActionEvent event) -> {
+            
+            if (drop_Stat.getSelectedIndex() == 0) {
+                filters.set(3, RowFilter.regexFilter("", 3));
+                sorter.setRowFilter(RowFilter.andFilter(filters));
+            } else {
+                filters.set(3, RowFilter.regexFilter(drop_Stat.getSelectedItem().toString(), 3));
+                sorter.setRowFilter(RowFilter.andFilter(filters));
+            }
+        });
+ 
     }
 
     /**
@@ -225,11 +282,11 @@ public class MainForm extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(37, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51))
         );
 
         jTabbedPane1.addTab("  My Lots  ", jPanel4);
@@ -240,7 +297,12 @@ public class MainForm extends javax.swing.JFrame {
         drop_Size.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "How big?", "200-300 sq. m", "300-400 sq. m", "400-500 sq. m", "500-600 sq. m" }));
 
         drop_Loc.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
-        drop_Loc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Which block?", "Block 1", "Block 2", "Block 3", "Block 4", "Block 5" }));
+        drop_Loc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Where?", "Block 1", "Block 2", "Block 3", "Block 4", "Block 5" }));
+        drop_Loc.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                drop_LocItemStateChanged(evt);
+            }
+        });
 
         drop_Price.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         drop_Price.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "How much?", "$10,000-$50,000", "$50,000-$100,000", "$100,000-$300,000", "$300,000-$600,000" }));
@@ -249,7 +311,7 @@ public class MainForm extends javax.swing.JFrame {
         jLabel3.setText("Search for your one true lot!");
 
         jLabel4.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
-        jLabel4.setText("Lot size (sq.m)");
+        jLabel4.setText("Lot size");
 
         jLabel7.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         jLabel7.setText("Price");
@@ -259,6 +321,11 @@ public class MainForm extends javax.swing.JFrame {
 
         drop_Stat.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         drop_Stat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Available" }));
+        drop_Stat.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                drop_StatItemStateChanged(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Fira Code", 0, 12)); // NOI18N
         jLabel10.setText("Status");
@@ -280,7 +347,14 @@ public class MainForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable_Search.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTable_Search);
+        if (jTable_Search.getColumnModel().getColumnCount() > 0) {
+            jTable_Search.getColumnModel().getColumn(0).setResizable(false);
+            jTable_Search.getColumnModel().getColumn(1).setResizable(false);
+            jTable_Search.getColumnModel().getColumn(2).setResizable(false);
+            jTable_Search.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -309,9 +383,9 @@ public class MainForm extends javax.swing.JFrame {
                         .addGap(117, 117, 117)
                         .addComponent(jLabel3))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                        .addGap(25, 25, 25)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 540, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -338,8 +412,8 @@ public class MainForm extends javax.swing.JFrame {
                             .addGap(22, 22, 22)
                             .addComponent(drop_Size, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(138, 138, 138))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(183, 183, 183))
         );
 
         jTabbedPane1.addTab("  Search  ", jPanel3);
@@ -362,20 +436,20 @@ public class MainForm extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(149, 149, 149)
+                .addGap(163, 163, 163)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel8)
                     .addComponent(btn_genRep))
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addContainerGap(173, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(193, 193, 193)
+                .addGap(211, 211, 211)
                 .addComponent(jLabel8)
                 .addGap(27, 27, 27)
                 .addComponent(btn_genRep)
-                .addContainerGap(265, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(" Lot report ", jPanel5);
@@ -390,25 +464,25 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
+                        .addGap(28, 28, 28)
                         .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
+                        .addGap(57, 57, 57)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel9)))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(37, Short.MAX_VALUE)
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(30, 30, 30)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
+                .addGap(28, 28, 28)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
         );
 
         pack();
@@ -420,6 +494,98 @@ public class MainForm extends javax.swing.JFrame {
         repform.setVisible(true);
         
     }//GEN-LAST:event_btn_genRepActionPerformed
+
+    private void drop_LocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_drop_LocItemStateChanged
+        
+//        DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
+//       
+//        ConcreteClient lotlist = new ConcreteClient();
+//        ArrayList<Lot> lots = lotlist.listOfLots();
+//        
+//        Object rowData[] = new Object[100];
+//        
+//        for (int i = 0; i < lots.size(); i++) {
+//            
+//            rowData[0] = lots.get(i).getSize() + " sq. m";
+//            rowData[1] = lots.get(i).getBlock();
+//            rowData[2] = "$" + lots.get(i).getPrice();
+//            rowData[3] = lots.get(i).getStatus();
+//            model.addRow(rowData);
+//            
+//        }
+//        
+//        // table sorter
+//        TableRowSorter<DefaultTableModel> sortLoc = new TableRowSorter<> (model);
+//        jTable_Search.setRowSorter(sortLoc);
+//        
+//        // sort values by numbers
+//        sortLoc.setComparator(2, new Comparator<String>() {
+//            public int compare(String s1, String s2) {
+//                return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
+//            }
+//        });
+//        
+//        String locQuery = drop_Loc.getSelectedItem().toString();
+//        
+//        switch (locQuery) {
+//            
+//            case "Block 1":
+//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 1", 1));
+//                break;
+//            case "Block 2":
+//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 2", 1));
+//                break;
+//            case "Block 3":
+//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 3", 1));
+//                break;
+//            case "Block 4":
+//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 4", 1));
+//                break;
+//            case "Block 5":
+//                sortLoc.setRowFilter(RowFilter.regexFilter("Block 5", 1));
+//                break;    
+//        }
+        
+    }//GEN-LAST:event_drop_LocItemStateChanged
+
+    private void drop_StatItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_drop_StatItemStateChanged
+        
+//        DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
+//       
+//        ConcreteClient lotlist = new ConcreteClient();
+//        ArrayList<Lot> lots = lotlist.listOfLots();
+//        
+//        Object rowData[] = new Object[100];
+//        
+//        for (int i = 0; i < lots.size(); i++) {
+//            
+//            rowData[0] = lots.get(i).getSize() + " sq. m";
+//            rowData[1] = lots.get(i).getBlock();
+//            rowData[2] = "$" + lots.get(i).getPrice();
+//            rowData[3] = lots.get(i).getStatus();
+//            model.addRow(rowData);
+//            
+//        }
+//        
+//        // table sorter
+//        TableRowSorter<DefaultTableModel> sortStat = new TableRowSorter<> (model);
+//        jTable_Search.setRowSorter(sortStat);
+//        
+//        // sort values by numbers
+//        sortStat.setComparator(2, new Comparator<String>() {
+//            public int compare(String s1, String s2) {
+//                return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
+//            }
+//        });
+//        
+//        String statQuery = drop_Stat.getSelectedItem().toString();
+//        
+//        if (statQuery == "Available") {
+//                sortStat.setRowFilter(RowFilter.regexFilter("Available", 3));
+//        } else
+//            jTable_Search.setRowSorter(sortStat);
+        
+    }//GEN-LAST:event_drop_StatItemStateChanged
 
     /**
      * @param args the command line arguments
