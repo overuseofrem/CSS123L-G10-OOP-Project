@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.RowFilter.ComparisonType;
 import javax.swing.table.DefaultTableModel;
@@ -25,7 +27,8 @@ public class MainForm extends javax.swing.JFrame {
     
     // initialize branching forms
     ReportForm repform = new ReportForm();
-    
+    BuyForm buyform = new BuyForm();
+   
     /**
      * Creates new form MainForm
      */
@@ -94,7 +97,6 @@ public class MainForm extends javax.swing.JFrame {
             
         }
         
-        
         // table sorter
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
         jTable_Search.setRowSorter(sorter);
@@ -122,7 +124,7 @@ public class MainForm extends javax.swing.JFrame {
                 String sizeQuery = drop_Size.getSelectedItem().toString();
                 // extract numbers and convert to int
                 String[] splitSize = sizeQuery.split("-");
-                int lowerSize = Integer.parseInt(splitSize[0]);
+                int lowerSize = Integer.parseInt(splitSize[0]) - 1;
                 int upperSize = Integer.parseInt(splitSize[1].split(" ")[0]) + 1;
                 // plug converted values in and filter
                 filters.set(0, RowFilter.numberFilter(ComparisonType.AFTER, lowerSize, 0));
@@ -156,7 +158,7 @@ public class MainForm extends javax.swing.JFrame {
                 String priceQuery = drop_Price.getSelectedItem().toString();
                 // extract numbers and convert to int
                 String[] splitPrice = priceQuery.split("-");
-                int lowerPrice = Integer.parseInt(splitPrice[0].substring(1).replace(",", ""));
+                int lowerPrice = Integer.parseInt(splitPrice[0].substring(1).replace(",", "")) - 1;
                 int upperPrice = Integer.parseInt(splitPrice[1].substring(1).replace(",", "")) + 1; 
                 // plug converted values in and filter
                 filters.set(3, RowFilter.numberFilter(ComparisonType.AFTER, lowerPrice, 2));
@@ -348,6 +350,11 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         jTable_Search.getTableHeader().setReorderingAllowed(false);
+        jTable_Search.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable_SearchMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable_Search);
         if (jTable_Search.getColumnModel().getColumnCount() > 0) {
             jTable_Search.getColumnModel().getColumn(0).setResizable(false);
@@ -390,9 +397,9 @@ public class MainForm extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addGap(16, 16, 16)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -411,9 +418,9 @@ public class MainForm extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addGap(22, 22, 22)
                             .addComponent(drop_Size, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(165, 165, 165))
+                .addGap(27, 27, 27)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(146, 146, 146))
         );
 
         jTabbedPane1.addTab("  Search  ", jPanel3);
@@ -486,14 +493,39 @@ public class MainForm extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     // generate report button, open ReportForm
     private void btn_genRepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_genRepActionPerformed
-
-        repform.setVisible(true);
-        
+        repform.setVisible(true);        
     }//GEN-LAST:event_btn_genRepActionPerformed
+
+    // select row; open BuyForm
+    private void jTable_SearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_SearchMouseClicked
+        
+        // get selected row
+        int rowIndex = jTable_Search.getSelectedRow();
+        
+        String rowSize = jTable_Search.getValueAt(rowIndex, 0).toString(); // get value from Size
+        String rowLoc = jTable_Search.getValueAt(rowIndex, 1).toString(); // get value from Location
+        String rowPrice = jTable_Search.getValueAt(rowIndex, 2).toString(); // get value from Price
+        String rowStat = jTable_Search.getValueAt(rowIndex, 3).toString().toLowerCase(); // get value from Status
+
+        // if !Available, show dialogue box; else open BuyForm
+        if (!"Available".equals(jTable_Search.getValueAt(rowIndex, 3).toString())) {
+            JOptionPane.showMessageDialog(null, "Sorry, this lot as already been " + rowStat + ".", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // show BuyLotForm
+            buyform.setVisible(true);
+            buyform.pack();
+            buyform.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            buyform.jtxt_Size.setText(rowSize + " sq. m");
+            buyform.jtxt_Loc.setText(rowLoc);
+            buyform.jtxt_Price.setText("$" + rowPrice);
+        }
+    }//GEN-LAST:event_jTable_SearchMouseClicked
 
     /**
      * @param args the command line arguments
