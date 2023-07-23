@@ -43,6 +43,7 @@ public class BuyForm extends javax.swing.JFrame {
         jtxt_Price = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Dirt Stock - Lot Transaction");
 
         jtxt_Size.setEditable(false);
         jtxt_Size.setFont(new java.awt.Font("Fira Code", 2, 14)); // NOI18N

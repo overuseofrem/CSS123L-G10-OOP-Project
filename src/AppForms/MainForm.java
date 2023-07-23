@@ -28,7 +28,8 @@ public class MainForm extends javax.swing.JFrame {
     // initialize branching forms
     ReportForm repform = new ReportForm();
     BuyForm buyform = new BuyForm();
-   
+    ConcreteClient lotlist = new ConcreteClient();
+    
     /**
      * Creates new form MainForm
      */
@@ -43,8 +44,8 @@ public class MainForm extends javax.swing.JFrame {
         
         DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();
         
-        ConcreteClient lotlist = new ConcreteClient();
-        ArrayList<Lot> lots = lotlist.listOfLots();
+        
+        ArrayList<Lot> lots = lotlist.getLots();
         
         Object rowData[] = new Object[100];
         
@@ -83,7 +84,7 @@ public class MainForm extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
        
         ConcreteClient lotlist = new ConcreteClient();
-        ArrayList<Lot> lots = lotlist.listOfLots();
+        ArrayList<Lot> lots = lotlist.getLots();
         
         Object rowData[] = new Object[100];
         

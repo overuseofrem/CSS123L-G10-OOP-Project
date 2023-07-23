@@ -15,8 +15,8 @@ public class ConcreteClient implements Client {
     
     private ArrayList<Lot> lots = new ArrayList<> ();
 
-    // array
-    public ArrayList listOfLots() {
+    // array & getter
+    public ArrayList getLots() {
 
     lots = new ArrayList<>();
 
@@ -138,6 +138,7 @@ public class ConcreteClient implements Client {
 
     return lots;
 }
+    
     
     // abstract methods
     

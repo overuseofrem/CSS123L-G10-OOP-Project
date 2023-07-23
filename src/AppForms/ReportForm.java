@@ -32,7 +32,7 @@ public class ReportForm extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();
        
         ConcreteClient lotlist = new ConcreteClient();
-        ArrayList<Lot> lots = lotlist.listOfLots();
+        ArrayList<Lot> lots = lotlist.getLots();
         
         Object rowData[] = new Object[100];
         
@@ -76,6 +76,7 @@ public class ReportForm extends javax.swing.JFrame {
         jTable_Report = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Dirt Stock - Lot Report");
 
         jLabel1.setFont(new java.awt.Font("Fira Code", 0, 24)); // NOI18N
         jLabel1.setText("Lot report");
