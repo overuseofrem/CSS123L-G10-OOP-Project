@@ -139,14 +139,11 @@ public class ConcreteClient implements Client {
     return lots;
 }
     
-    
     // abstract methods
-    
-    ConcreteObserver observers = new ConcreteObserver();
-    
     @Override
     public void buyLot(ArrayList<Lot> lots) {
         
+        // add code
         // check if status == "Available", set to "Sold"
         
     }
@@ -154,7 +151,7 @@ public class ConcreteClient implements Client {
     @Override
     public void reserveLot(ArrayList<Lot> lots) {
         
-        
+        // add code
         // check if status == "Available", set to "Reserved"
         
     }

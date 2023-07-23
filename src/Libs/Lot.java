@@ -52,7 +52,7 @@ public class Lot {
         return status;
     }
 
-    public boolean isOwn() {               // check if user owns this lot
+    public boolean isOwn() { // check if user owns this lot
         return own;
 }
         
