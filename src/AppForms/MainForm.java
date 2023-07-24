@@ -83,8 +83,8 @@ public class MainForm extends javax.swing.JFrame {
         
         DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
        
-        ConcreteClient lotlist = new ConcreteClient();
-        ArrayList<Lot> lots = lotlist.getLots();
+        ConcreteClient lot = new ConcreteClient();
+        ArrayList<Lot> lots = lot.getLots();
         
         Object rowData[] = new Object[100];
         
@@ -515,7 +515,7 @@ public class MainForm extends javax.swing.JFrame {
 
         // if !Available, show dialogue box; else open BuyForm
         if (!"Available".equals(jTable_Search.getValueAt(rowIndex, 3).toString())) {
-            JOptionPane.showMessageDialog(null, "Sorry, this lot as already been " + rowStat + ".", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Sorry, this lot as already been " + rowStat + ".");
         } else {
             // show BuyLotForm
             buyform.setVisible(true);
