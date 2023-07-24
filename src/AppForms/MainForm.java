@@ -28,7 +28,7 @@ public class MainForm extends javax.swing.JFrame {
     // initialize branching forms
     ReportForm repform = new ReportForm();
     BuyForm buyform = new BuyForm();
-    ConcreteClient lotlist = new ConcreteClient();
+    ConcreteClient lot = new ConcreteClient();
     
     /**
      * Creates new form MainForm
@@ -42,15 +42,17 @@ public class MainForm extends javax.swing.JFrame {
     // table for My Lots
     private void displayMyLotsTable() {
         
+        // initialize mylots model
         DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();
         
+        // get lot array
+        ArrayList<Lot> lots = lot.getLots();
         
-        ArrayList<Lot> lots = lotlist.getLots();
-        
+        // create table and insert array data
         Object rowData[] = new Object[100];
         
         for (int i = 0; i < lots.size(); i++) {
-            
+
             rowData[0] = lots.get(i).getSize() + " sq. m";
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = "$" + lots.get(i).getPrice();
@@ -79,13 +81,16 @@ public class MainForm extends javax.swing.JFrame {
         
     }
     
+    // table for Search
     private void displaySearchTable() {
         
+        // initialize search model
         DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
        
-        ConcreteClient lot = new ConcreteClient();
+        // get lot array
         ArrayList<Lot> lots = lot.getLots();
         
+        // create table and insert array data
         Object rowData[] = new Object[100];
         
         for (int i = 0; i < lots.size(); i++) {
@@ -115,12 +120,12 @@ public class MainForm extends javax.swing.JFrame {
             
         // size filter    
         drop_Size.addActionListener((ActionEvent event) -> {
-            // if index == 0, show all; else apply filter
+            // if index == 0, show all
             if (drop_Size.getSelectedIndex() == 0) {
                 filters.set(0, RowFilter.numberFilter(ComparisonType.AFTER, 0, 0));
                 filters.set(1, RowFilter.numberFilter(ComparisonType.BEFORE, 601, 0));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
-            } else {
+            } else { // else apply filter
                 // get Size input
                 String sizeQuery = drop_Size.getSelectedItem().toString();
                 // extract numbers and convert to int
@@ -137,11 +142,11 @@ public class MainForm extends javax.swing.JFrame {
             
         // Location filter
         drop_Loc.addActionListener((ActionEvent event) -> {
-            // if index == 0, show all; else apply filter
+            // if index == 0, show all
             if (drop_Loc.getSelectedIndex() == 0) {
                 filters.set(2, RowFilter.regexFilter("", 1));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
-            } else {
+            } else { // else apply filter
                 filters.set(2, RowFilter.regexFilter(drop_Loc.getSelectedItem().toString(), 1));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
@@ -149,12 +154,12 @@ public class MainForm extends javax.swing.JFrame {
              
         // price filter
         drop_Price.addActionListener((ActionEvent event) -> {
-            // if index == 0, show all; else apply filter
+            // if index == 0, show all
             if (drop_Price.getSelectedIndex() == 0) {
                 filters.set(3, RowFilter.numberFilter(ComparisonType.AFTER, 9999, 2));
                 filters.set(4, RowFilter.numberFilter(ComparisonType.BEFORE, 600001, 2));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
-            } else {
+            } else { // else apply filter
                 // get Price input
                 String priceQuery = drop_Price.getSelectedItem().toString();
                 // extract numbers and convert to int
@@ -170,11 +175,11 @@ public class MainForm extends javax.swing.JFrame {
         
         // Status filter
         drop_Stat.addActionListener((ActionEvent event) -> {
-            // if index == 0, show all; else apply filter
+            // if index == 0, show all
             if (drop_Stat.getSelectedIndex() == 0) {
                 filters.set(5, RowFilter.regexFilter("", 3));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
-            } else {
+            } else { // else apply filter
                 filters.set(5, RowFilter.regexFilter(drop_Stat.getSelectedItem().toString(), 3));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }

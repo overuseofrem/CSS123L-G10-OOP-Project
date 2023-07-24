@@ -23,17 +23,20 @@ public class ReportForm extends javax.swing.JFrame {
      */
     public ReportForm() {
         initComponents();
-        displayTable(); // display table
+        displayReportTable(); // display table
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // closes only current window
     }
     
-    private void displayTable() {
+    private void displayReportTable() {
         
+        // initialize report model
         DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();
        
-        ConcreteClient lotlist = new ConcreteClient();
-        ArrayList<Lot> lots = lotlist.getLots();
+        // ConcreteClient instance and get array
+        ConcreteClient lot = new ConcreteClient();
+        ArrayList<Lot> lots = lot.getLots();
         
+        // create table and insert array data
         Object rowData[] = new Object[100];
         
         for (int i = 0; i < lots.size(); i++) {
@@ -46,7 +49,6 @@ public class ReportForm extends javax.swing.JFrame {
             
         }
         
-        
         // table sorter
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
         jTable_Report.setRowSorter(sorter);
@@ -56,10 +58,7 @@ public class ReportForm extends javax.swing.JFrame {
             public int compare(String s1, String s2) {
                 return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
             }
-        });
-        
-        
-        
+        }); 
     }
 
     /**
