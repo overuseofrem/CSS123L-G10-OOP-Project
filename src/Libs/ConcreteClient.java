@@ -129,7 +129,15 @@ public class ConcreteClient implements Client {
         lots.add(new Lot(480, "Block 5", 570000, "Available", false));
     }
     
-    public ArrayList getLots() {
+    public Lot getLot(int index) {
+        //lots = new ArrayList<>();
+
+        // lot values (20 lots per block, 100 lots in total)
+        // block 1
+        return lots.get(index);
+    }
+    
+     public ArrayList<Lot> getLots() {
         //lots = new ArrayList<>();
 
         // lot values (20 lots per block, 100 lots in total)
@@ -137,12 +145,20 @@ public class ConcreteClient implements Client {
         return lots;
     }
 
+
     // abstract methods
     @Override
-    public void buyLot(ArrayList<Lot> lots) {
+    public void buyLot(int rowIndex) {
 
         // add code
         // check if status == "Available", set to "Sold"
+        
+        Lot lot = this.getLot(rowIndex);
+        lot.setOwn(true);
+        lot.setStatus("Sold");
+        System.out.println("BUYING THIS LOT " + rowIndex + " : " + lot.getSize() + " : " + lot.getBlock() + " : " +lot.getPrice() + lot.getStatus()+ lot.isOwn());
+        observer.update();
+        /*
         for (Lot lot : lots) {
             if (lot.getStatus().equals("Available")) {
                 lot.setStatus("Sold");
@@ -154,6 +170,7 @@ public class ConcreteClient implements Client {
                 observer.update();
             }
         }
+        */
     }
 
     @Override

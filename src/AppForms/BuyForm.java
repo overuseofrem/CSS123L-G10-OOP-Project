@@ -13,23 +13,25 @@ import java.util.ArrayList;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author ASUS
  */
-public class BuyForm extends javax.swing.JFrame{
+public class BuyForm extends javax.swing.JFrame {
 
     /**
      * Creates new form BuyForm
      */
-    
-    ConcreteClient client;
-    
-    public BuyForm(ConcreteClient cc) {
+    private ConcreteClient client;
+    private int rowIndex;
+
+    public BuyForm(ConcreteClient cc, int rowIndex) {
+        System.out.println("CREATING BUYFORM " +" : " + rowIndex);
         client = cc;
+        this.rowIndex = rowIndex;
         initComponents();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
     }
 
     /**
@@ -172,24 +174,22 @@ public class BuyForm extends javax.swing.JFrame{
     // reserve lot
     private void btn_ReserveLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReserveLotActionPerformed
         // TODO add your handling code here:
-        ArrayList<Lot> lots = client.getLots();
-        client.buyLot(lots);
         // Optionally, you can display a message to the user after buying the lot
         JOptionPane.showMessageDialog(this, "Lot reserved successfully!");
     }//GEN-LAST:event_btn_ReserveLotActionPerformed
-    
+
     // buy lot
     private void btn_BuyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuyLotActionPerformed
         // TODO add your handling code here:
         //buyLot();
         //ConcreteClient client = new ConcreteClient();
-        ArrayList<Lot> lots = client.getLots();
-        client.buyLot(lots);
+        client.buyLot(rowIndex);
+        
         // Optionally, you can display a message to the user after buying the lot
         JOptionPane.showMessageDialog(this, "Lot bought successfully!");
         
-        
-        
+
+
     }//GEN-LAST:event_btn_BuyLotActionPerformed
 
     // exit; close window
@@ -209,7 +209,7 @@ public class BuyForm extends javax.swing.JFrame{
             }
         });
     }
-*/
+     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuyLot;
     private javax.swing.JButton btn_ExitLot;

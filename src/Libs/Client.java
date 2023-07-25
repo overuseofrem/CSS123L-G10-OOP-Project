@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public interface Client {
     
-    void buyLot(ArrayList<Lot> lots);
+    void buyLot(int rowIndex);
     
     void reserveLot(ArrayList<Lot> lots);
     

@@ -7,6 +7,7 @@
 package AppForms;
 
 import Libs.*;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,7 +32,6 @@ public class MainForm extends javax.swing.JFrame {
     // initialize branching forms
     
     ReportForm repform = new ReportForm(lotlist);
-    BuyForm buyform = new BuyForm(lotlist);
     
     /**
      * Creates new form MainForm
@@ -44,7 +44,7 @@ public class MainForm extends javax.swing.JFrame {
     
     // table for My Lots
     private void displayMyLotsTable() {
-        
+
         DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();
         
         
@@ -79,7 +79,6 @@ public class MainForm extends javax.swing.JFrame {
         
         // filter where isOwn = true
         sortMyLot.setRowFilter(RowFilter.regexFilter(Boolean.toString(true), 3));
-        
     }
     
     private void displaySearchTable() {
@@ -516,12 +515,14 @@ public class MainForm extends javax.swing.JFrame {
         String rowLoc = jTable_Search.getValueAt(rowIndex, 1).toString(); // get value from Location
         String rowPrice = jTable_Search.getValueAt(rowIndex, 2).toString(); // get value from Price
         String rowStat = jTable_Search.getValueAt(rowIndex, 3).toString().toLowerCase(); // get value from Status
-
+        System.out.println("CLICKED ROW " + rowIndex);
         // if !Available, show dialogue box; else open BuyForm
         if (!"Available".equals(jTable_Search.getValueAt(rowIndex, 3).toString())) {
             JOptionPane.showMessageDialog(null, "Sorry, this lot as already been " + rowStat + ".", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             // show BuyLotForm
+            BuyForm buyform = new BuyForm(lotlist, rowIndex);
+
             // create buy form object with lot index as paramater OR ung lot na omsm
             buyform.setVisible(true);
             buyform.pack();
@@ -537,6 +538,7 @@ public class MainForm extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -561,13 +563,14 @@ public class MainForm extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
             public void run() {
+                
                 new MainForm().setVisible(true);
             }
         });
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_genRep;
     private javax.swing.JComboBox<String> drop_Loc;

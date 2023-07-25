@@ -13,7 +13,10 @@ import java.util.ArrayList;
  */
 public class ConcreteObserver implements Observer {
     
-
+    Object theOneThatIsBeingObserved;
+    public ConcreteObserver() {
+        
+    }    
     @Override
     public void update() {
         //refresh ui pls;
