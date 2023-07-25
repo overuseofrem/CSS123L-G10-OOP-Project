@@ -6,9 +6,6 @@
 
 package Libs;
 
-import java.util.ArrayList;
-
-
 /**
  *
  * @author Group 10
@@ -21,8 +18,6 @@ public class Lot {
     private int price; // amend "$". if interested in decimals, use [double]
     private String status;// "Available", "Sold", "Reserved"
     private boolean own; // user owns this lot?
-    
-    private ArrayList<Lot> lots = new ArrayList<> ();
    
     // constructor
     public Lot(int size, String block, int price, String status, boolean own) {

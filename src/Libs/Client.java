@@ -13,9 +13,9 @@ import java.util.ArrayList;
  */
 public interface Client {
     
-    void buyLot(ArrayList<Lot> lots);
+    void buyLot();
     
-    void reserveLot(ArrayList<Lot> lots);
+    void reserveLot();
     
     void notifyClient();
     

@@ -5,6 +5,7 @@
  */
 package Libs;
 
+import AppForms.*;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * @author ASUS
  */
 public class ConcreteClient implements Client {
-    
+
     private ArrayList<Lot> lots = new ArrayList<> ();
 
     // array & getter
@@ -23,9 +24,9 @@ public class ConcreteClient implements Client {
     // lot values (20 lots per block, 100 lots in total)
 
     // block 1
-        lots.add(new Lot(250, "Block 1", 50000, "Reserved", true)); // own is set to true for testing
+        lots.add(new Lot(250, "Block 1", 50000, "Reserved", true )); // own is set to true for testing
         lots.add(new Lot(300, "Block 1", 70000, "Sold", true)); // own is set to true for testing
-        lots.add(new Lot(500, "Block 1", 69000, "Available", false));
+        lots.add(new Lot(500, "Block 1", 69000, "Available", false)); // set status of this lot to "Reserved/Sold"
         lots.add(new Lot(600, "Block 1", 500000, "Reserved", false));
         lots.add(new Lot(200, "Block 1", 12000, "Available", false));
         lots.add(new Lot(250, "Block 1", 50000, "Available", false));
@@ -141,19 +142,25 @@ public class ConcreteClient implements Client {
     
     // abstract methods
     @Override
-    public void buyLot(ArrayList<Lot> lots) {
+    public void buyLot() {   
         
-        // add code
-        // check if status == "Available", set to "Sold"
+        MainForm mainform = new MainForm();
+        
+        Lot lot = lots.get(mainform.jTable_Search.getSelectedRow());
+        
+        // set the status of the Lot object to "Sold"
+        lot.setStatus("Reserved");
         
     }
 
     @Override
-    public void reserveLot(ArrayList<Lot> lots) {
-        
-        // add code
-        // check if status == "Available", set to "Reserved"
-        
+    public void reserveLot() {
+        MainForm mainform = new MainForm();
+
+        Lot lot = lots.get(mainform.jTable_Search.getSelectedRow());
+    
+        // set the status of the Lot object to "Reserved"
+        lot.setStatus("Reserved");
     }
     
     @Override

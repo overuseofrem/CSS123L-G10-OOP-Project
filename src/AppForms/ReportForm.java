@@ -18,6 +18,7 @@ import javax.swing.table.TableRowSorter;
  */
 public class ReportForm extends javax.swing.JFrame {
 
+
     /**
      * Creates new form ReportForm
      */
