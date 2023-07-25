@@ -57,7 +57,8 @@ public class Lot {
 }
         
     // setters
-    public void setOwn(boolean own) { // set ownership
+    public void setOwn(boolean own) {
+        // set ownership
         this.own = own;               // used to display at MyLots table
     }                                 // call and use when 
     

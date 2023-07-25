@@ -12,17 +12,13 @@ import java.util.ArrayList;
  * @author ASUS
  */
 public class ConcreteClient implements Client {
-    
-    private ArrayList<Lot> lots = new ArrayList<> ();
 
+    public ArrayList<Lot> lots = new ArrayList<>();
+    private ConcreteObserver observer;
     // array & getter
-    public ArrayList getLots() {
-
-    lots = new ArrayList<>();
-
-    // lot values (20 lots per block, 100 lots in total)
-
-    // block 1
+    public ConcreteClient(ConcreteObserver observer) {
+        this.observer = observer;
+        
         lots.add(new Lot(250, "Block 1", 50000, "Reserved", true)); // own is set to true for testing
         lots.add(new Lot(300, "Block 1", 70000, "Sold", true)); // own is set to true for testing
         lots.add(new Lot(500, "Block 1", 69000, "Available", false));
@@ -44,7 +40,7 @@ public class ConcreteClient implements Client {
         lots.add(new Lot(200, "Block 1", 54000, "Available", false));
         lots.add(new Lot(280, "Block 1", 68000, "Sold", false));
 
-    // block 2
+        // block 2
         lots.add(new Lot(510, "Block 2", 201790, "Available", false));
         lots.add(new Lot(230, "Block 2", 100970, "Sold", false));
         lots.add(new Lot(530, "Block 2", 200670, "Available", false));
@@ -66,8 +62,7 @@ public class ConcreteClient implements Client {
         lots.add(new Lot(300, "Block 2", 20000, "Available", false));
         lots.add(new Lot(200, "Block 2", 10000, "Available", false));
 
-    // block 3
-
+        // block 3
         lots.add(new Lot(200, "Block 3", 90000, "Reserved", false));
         lots.add(new Lot(250, "Block 3", 120000, "Available", false));
         lots.add(new Lot(300, "Block 3", 100000, "Available", false));
@@ -89,9 +84,7 @@ public class ConcreteClient implements Client {
         lots.add(new Lot(330, "Block 3", 230000, "Available", false));
         lots.add(new Lot(440, "Block 3", 500000, "Sold", false));
 
-
-    // block 4
-
+        // block 4
         lots.add(new Lot(520, "Block 4", 200000, "Available", false));
         lots.add(new Lot(580, "Block 4", 280000, "Sold", false));
         lots.add(new Lot(220, "Block 4", 30800, "Available", false));
@@ -113,8 +106,7 @@ public class ConcreteClient implements Client {
         lots.add(new Lot(490, "Block 4", 490000, "Available", false));
         lots.add(new Lot(360, "Block 4", 120000, "Reserved", false));
 
-    // block 5
-
+        // block 5
         lots.add(new Lot(230, "Block 5", 54000, "Sold", false));
         lots.add(new Lot(580, "Block 5", 480000, "Sold", false));
         lots.add(new Lot(220, "Block 5", 36000, "Available", false));
@@ -135,32 +127,53 @@ public class ConcreteClient implements Client {
         lots.add(new Lot(400, "Block 5", 380000, "Sold", false));
         lots.add(new Lot(410, "Block 5", 400000, "Sold", false));
         lots.add(new Lot(480, "Block 5", 570000, "Available", false));
-
-    return lots;
-}
+    }
     
+    public ArrayList getLots() {
+        //lots = new ArrayList<>();
+
+        // lot values (20 lots per block, 100 lots in total)
+        // block 1
+        return lots;
+    }
+
     // abstract methods
     @Override
     public void buyLot(ArrayList<Lot> lots) {
-        
+
         // add code
         // check if status == "Available", set to "Sold"
-        
+        for (Lot lot : lots) {
+            if (lot.getStatus().equals("Available")) {
+                lot.setStatus("Sold");
+
+                // Set the ownership to true
+                //update();\
+                lot.setOwn(true);
+                
+                observer.update();
+            }
+        }
     }
 
     @Override
     public void reserveLot(ArrayList<Lot> lots) {
-        
+
         // add code
         // check if status == "Available", set to "Reserved"
-        
+        for (Lot lot : lots) {
+            if (lot.getStatus().equals("Available")) {
+                lot.setStatus("Reserved");
+                //update(lots);// Set the ownership to true
+            }
+        }
+
     }
-    
+
     @Override
     public void notifyClient() {
-        
+
         // add code
-        
     }
-    
+
 }

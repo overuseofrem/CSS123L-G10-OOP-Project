@@ -24,11 +24,14 @@ import javax.swing.table.TableRowSorter;
  * @author ASUS
  */
 public class MainForm extends javax.swing.JFrame {
+    ConcreteObserver observer = new ConcreteObserver();
+    //observer class = new obserber (this.MainForm)
+    ConcreteClient lotlist = new ConcreteClient(observer); //pass the observer class as parameter
     
     // initialize branching forms
-    ReportForm repform = new ReportForm();
-    BuyForm buyform = new BuyForm();
-    ConcreteClient lotlist = new ConcreteClient();
+    
+    ReportForm repform = new ReportForm(lotlist);
+    BuyForm buyform = new BuyForm(lotlist);
     
     /**
      * Creates new form MainForm
@@ -83,7 +86,7 @@ public class MainForm extends javax.swing.JFrame {
         
         DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
        
-        ConcreteClient lotlist = new ConcreteClient();
+        //ConcreteClient lotlist = new ConcreteClient();
         ArrayList<Lot> lots = lotlist.getLots();
         
         Object rowData[] = new Object[100];
@@ -94,6 +97,7 @@ public class MainForm extends javax.swing.JFrame {
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = lots.get(i).getPrice();
             rowData[3] = lots.get(i).getStatus();
+            
             model.addRow(rowData);
             
         }
@@ -518,6 +522,7 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Sorry, this lot as already been " + rowStat + ".", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             // show BuyLotForm
+            // create buy form object with lot index as paramater OR ung lot na omsm
             buyform.setVisible(true);
             buyform.pack();
             buyform.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -5,17 +5,18 @@
  */
 package Libs;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author ASUS
  */
 public class ConcreteObserver implements Observer {
+    
 
     @Override
     public void update() {
-        
-        // check if isOwn = false, set to true
-        
+        //refresh ui pls;
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
 }
