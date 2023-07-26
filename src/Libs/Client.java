@@ -13,10 +13,16 @@ import java.util.ArrayList;
  */
 public interface Client {
     
+    public ArrayList<Lot> lots = new ArrayList<Lot>();
+    
     void buyLot(int rowIndex);
     
-    void reserveLot(ArrayList<Lot> lots);
+    void reserveLot(int rowIndex);
     
-    void notifyClient();
+    public void attach(Observer obs);
+   
+    public void remove(Observer obs);
+    
+    void notifyAllObservers();
     
 }

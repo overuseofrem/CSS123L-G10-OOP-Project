@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 
@@ -22,8 +23,8 @@ public class BuyForm extends javax.swing.JFrame {
     /**
      * Creates new form BuyForm
      */
-    private ConcreteClient client;
-    private int rowIndex;
+    final private ConcreteClient client;
+    final private int rowIndex;
 
     public BuyForm(ConcreteClient cc, int rowIndex) {
         System.out.println("CREATING BUYFORM " +" : " + rowIndex);
@@ -177,6 +178,8 @@ public class BuyForm extends javax.swing.JFrame {
         // Optionally, you can display a message to the user after buying the lot
         client.reserveLot(rowIndex);
         JOptionPane.showMessageDialog(this, "Lot reserved successfully!");
+        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+
     }//GEN-LAST:event_btn_ReserveLotActionPerformed
 
     // buy lot
@@ -188,6 +191,8 @@ public class BuyForm extends javax.swing.JFrame {
         
         // Optionally, you can display a message to the user after buying the lot
         JOptionPane.showMessageDialog(this, "Lot bought successfully!");
+        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        
         
 
 

@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,14 +18,13 @@ import java.util.ArrayList;
  */
 public class ConcreteClient implements Client {
 
-    public ArrayList<Lot> lots = new ArrayList<>();
-    private static final String JSON_FILE_PATH = "lots.json";
-
-    private ConcreteObserver observer;
-    // array & getter
-    public ConcreteClient(ConcreteObserver observer) {
-        this.observer = observer;
+    public ArrayList<Lot> lots = new ArrayList<Lot>();
         
+    // FOR OBSERVERS
+    private ArrayList<Observer> observers = new ArrayList<Observer>();
+
+    // array & getter
+    public ConcreteClient() {  
         lots.add(new Lot(250, "Block 1", 50000, "Reserved", true)); // own is set to true for testing
         lots.add(new Lot(300, "Block 1", 70000, "Sold", true)); // own is set to true for testing
         lots.add(new Lot(500, "Block 1", 69000, "Available", false));
@@ -158,16 +158,15 @@ public class ConcreteClient implements Client {
 
         // add code
         // check if status == "Available", set to "Sold"
-        
+       
         Lot lot = this.getLot(rowIndex);
         lot.setOwn(true);
         lot.setStatus("Sold");
-        System.out.println("BUYING THIS LOT " + rowIndex + " : " + lot.getSize() + " : " + lot.getBlock() + " : " +lot.getPrice() + lot.getStatus()+ lot.isOwn());
-        observer.update();
-        
+        this.notifyAllObservers();
         
     }
 
+    @Override
     public void reserveLot(int rowIndex) {
 
         // add code
@@ -175,20 +174,23 @@ public class ConcreteClient implements Client {
         Lot lot = this.getLot(rowIndex);
         lot.setOwn(true);
         lot.setStatus("Reserved");
-        System.out.println("BUYING THIS LOT " + rowIndex + " : " + lot.getSize() + " : " + lot.getBlock() + " : " +lot.getPrice() + lot.getStatus()+ lot.isOwn());
-        observer.update();
-
-
+        this.notifyAllObservers();
+    }
+    
+    @Override
+    public void attach(Observer obs) {
+        observers.add(obs);
+    };
+    
+    @Override
+    public void remove(Observer obs) {
+        observers.remove(obs);
     }
 
     @Override
-    public void notifyClient() {
-
-        // add code
-    }
-
-    @Override
-    public void reserveLot(ArrayList<Lot> lots) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void notifyAllObservers() {
+        for (Observer obs : observers) {
+            obs.update();
+        }
     }
 }

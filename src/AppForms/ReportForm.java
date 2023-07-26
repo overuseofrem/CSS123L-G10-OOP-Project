@@ -6,6 +6,7 @@
 package AppForms;
 
 import Libs.*;
+import java.awt.Container;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,49 +18,59 @@ import javax.swing.table.TableRowSorter;
  *
  * @author ASUS
  */
-public class ReportForm extends javax.swing.JFrame {
+public class ReportForm extends javax.swing.JFrame implements Observer {
 
     /**
      * Creates new form ReportForm
      */
-     ArrayList<Lot> lots = new ArrayList<Lot>();
+    ArrayList<Lot> lots = new ArrayList<Lot>();
+
     public ReportForm(ConcreteClient lotlist) {
+        lotlist.attach(this); 
         lots = lotlist.getLots();
         initComponents();
         displayTable(); // display table
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // closes only current window
     }
+
+    public void update() {
+        System.out.println("REFRESHING REPORT FORM");
+        this.refreshUI();
+    }
     
+    private void refreshUI() {
+        Container container = this.getContentPane(); // Replace 'this' with the appropriate container if needed
+        displayTable();
+        container.revalidate();
+        container.repaint();
+    }
     private void displayTable() {
-        
-        DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();       
-        
+
+        DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();
+
         Object rowData[] = new Object[100];
-        
+
         for (int i = 0; i < lots.size(); i++) {
-            
+
             rowData[0] = lots.get(i).getSize() + " sq. m";
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = "$" + lots.get(i).getPrice();
             rowData[3] = lots.get(i).getStatus();
             model.addRow(rowData);
-            
+
         }
-        
-        
+
         // table sorter
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
         jTable_Report.setRowSorter(sorter);
-        
+
         // sort values by numbers
         sorter.setComparator(2, new Comparator<String>() {
             public int compare(String s1, String s2) {
                 return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
             }
         });
-        
-        
-        
+
     }
 
     /**
@@ -138,7 +149,6 @@ public class ReportForm extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
     /*
     
     public static void main(String args[]) {
@@ -148,7 +158,7 @@ public class ReportForm extends javax.swing.JFrame {
             }
         });
     }
-*/
+     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;

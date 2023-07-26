@@ -24,19 +24,29 @@ import javax.swing.table.TableRowSorter;
  *
  * @author ASUS
  */
-public class MainForm extends javax.swing.JFrame {
+public class MainForm extends javax.swing.JFrame implements Observer{
 
-    ConcreteObserver observer = new ConcreteObserver();
-    //observer class = new obserber (this.MainForm)
-    ConcreteClient lotlist = new ConcreteClient(observer); //pass the observer class as parameter
-
+      
+    @Override
+    public void update() {
+        System.out.println("REFRESHINH MAINFORM");
+        this.refreshUI();
+    };
+    
     // initialize branching forms
-    ReportForm repform = new ReportForm(lotlist);
+    ConcreteClient lotlist;
+    ReportForm repform;
 
     /**
      * Creates new form MainForm
      */
     public MainForm() {
+        lotlist = new ConcreteClient(); //pass the observer class as parameter
+        repform = new ReportForm(lotlist);
+        System.out.println("LOTLIST : " + lotlist);
+        System.out.println("THIS OBJECT : " + this);
+        lotlist.attach(this); 
+        
         initComponents();
         displayMyLotsTable();
         displaySearchTable();
@@ -64,6 +74,19 @@ public class MainForm extends javax.swing.JFrame {
         ArrayList<Lot> lots = lotlist.getLots();
 
         Object rowData[] = new Object[100];
+        
+        int rows = model.getRowCount();
+        
+        if(rows > 0) {
+            while(rows > 0) {
+                model.removeRow(0);
+                rows--;
+            }
+        } else {
+            // hide 'Own?' column
+            TableColumnModel columnModel = jTable_MyLots.getColumnModel();
+            columnModel.removeColumn(columnModel.getColumn(3));
+        }
 
         for (int i = 0; i < lots.size(); i++) {
 
@@ -78,10 +101,6 @@ public class MainForm extends javax.swing.JFrame {
         // table sorter
         TableRowSorter<DefaultTableModel> sortMyLot = new TableRowSorter<>(model);
         jTable_MyLots.setRowSorter(sortMyLot);
-
-        // hide 'Own?' column
-        TableColumnModel columnModel = jTable_MyLots.getColumnModel();
-        columnModel.removeColumn(columnModel.getColumn(3));
 
         // sort values by numbers
         sortMyLot.setComparator(2, new Comparator<String>() {
@@ -216,7 +235,6 @@ public class MainForm extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable_Search = new javax.swing.JTable();
-        button1 = new java.awt.Button();
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         btn_genRep = new javax.swing.JButton();
@@ -369,13 +387,6 @@ public class MainForm extends javax.swing.JFrame {
             jTable_Search.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        button1.setLabel("button1");
-        button1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -401,9 +412,7 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(drop_Stat, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(117, 117, 117)
-                        .addComponent(jLabel3)
-                        .addGap(34, 34, 34)
-                        .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel3))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -412,13 +421,8 @@ public class MainForm extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26)
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(16, 16, 16)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -551,18 +555,11 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable_SearchMouseClicked
     private void refreshUI() {
         Container container = this.getContentPane(); // Replace 'this' with the appropriate container if needed
+        displayMyLotsTable();
         displaySearchTable();
         container.revalidate();
         container.repaint();
-        System.out.println("lmao");
-
     }
-    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
-        // TODO add your handling code here:
-        refreshUI();
-        System.out.println("refreshing");
-    }//GEN-LAST:event_button1ActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -594,15 +591,15 @@ public class MainForm extends javax.swing.JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-
+                   
                 new MainForm().setVisible(true);
             }
         });
     }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_genRep;
-    private java.awt.Button button1;
     private javax.swing.JComboBox<String> drop_Loc;
     private javax.swing.JComboBox<String> drop_Price;
     private javax.swing.JComboBox<String> drop_Size;
