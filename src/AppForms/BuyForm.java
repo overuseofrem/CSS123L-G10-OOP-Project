@@ -175,6 +175,7 @@ public class BuyForm extends javax.swing.JFrame {
     private void btn_ReserveLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReserveLotActionPerformed
         // TODO add your handling code here:
         // Optionally, you can display a message to the user after buying the lot
+        client.reserveLot(rowIndex);
         JOptionPane.showMessageDialog(this, "Lot reserved successfully!");
     }//GEN-LAST:event_btn_ReserveLotActionPerformed
 
@@ -195,6 +196,7 @@ public class BuyForm extends javax.swing.JFrame {
     // exit; close window
     private void btn_ExitLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExitLotActionPerformed
         dispose();
+        
     }//GEN-LAST:event_btn_ExitLotActionPerformed
 
     /**

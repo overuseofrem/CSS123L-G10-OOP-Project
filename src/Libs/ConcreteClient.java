@@ -4,7 +4,11 @@
  * and open the template in the editor.
  */
 package Libs;
-
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -14,6 +18,8 @@ import java.util.ArrayList;
 public class ConcreteClient implements Client {
 
     public ArrayList<Lot> lots = new ArrayList<>();
+    private static final String JSON_FILE_PATH = "lots.json";
+
     private ConcreteObserver observer;
     // array & getter
     public ConcreteClient(ConcreteObserver observer) {
@@ -158,32 +164,20 @@ public class ConcreteClient implements Client {
         lot.setStatus("Sold");
         System.out.println("BUYING THIS LOT " + rowIndex + " : " + lot.getSize() + " : " + lot.getBlock() + " : " +lot.getPrice() + lot.getStatus()+ lot.isOwn());
         observer.update();
-        /*
-        for (Lot lot : lots) {
-            if (lot.getStatus().equals("Available")) {
-                lot.setStatus("Sold");
-
-                // Set the ownership to true
-                //update();\
-                lot.setOwn(true);
-                
-                observer.update();
-            }
-        }
-        */
+        
+        
     }
 
-    @Override
-    public void reserveLot(ArrayList<Lot> lots) {
+    public void reserveLot(int rowIndex) {
 
         // add code
         // check if status == "Available", set to "Reserved"
-        for (Lot lot : lots) {
-            if (lot.getStatus().equals("Available")) {
-                lot.setStatus("Reserved");
-                //update(lots);// Set the ownership to true
-            }
-        }
+        Lot lot = this.getLot(rowIndex);
+        lot.setOwn(true);
+        lot.setStatus("Reserved");
+        System.out.println("BUYING THIS LOT " + rowIndex + " : " + lot.getSize() + " : " + lot.getBlock() + " : " +lot.getPrice() + lot.getStatus()+ lot.isOwn());
+        observer.update();
+
 
     }
 
@@ -193,4 +187,8 @@ public class ConcreteClient implements Client {
         // add code
     }
 
+    @Override
+    public void reserveLot(ArrayList<Lot> lots) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

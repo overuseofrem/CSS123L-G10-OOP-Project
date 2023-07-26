@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package AppForms;
 
 import Libs.*;
+import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -25,47 +25,60 @@ import javax.swing.table.TableRowSorter;
  * @author ASUS
  */
 public class MainForm extends javax.swing.JFrame {
+
     ConcreteObserver observer = new ConcreteObserver();
     //observer class = new obserber (this.MainForm)
     ConcreteClient lotlist = new ConcreteClient(observer); //pass the observer class as parameter
-    
+
     // initialize branching forms
-    
     ReportForm repform = new ReportForm(lotlist);
-    
+
     /**
      * Creates new form MainForm
      */
     public MainForm() {
         initComponents();
-        displayMyLotsTable(); 
+        displayMyLotsTable();
         displaySearchTable();
     }
-    
+
+    private Object[][] createSearchTableData() {
+        ArrayList<Lot> lots = lotlist.getLots();
+        Object[][] data = new Object[lots.size()][4];
+
+        for (int i = 0; i < lots.size(); i++) {
+            data[i][0] = lots.get(i).getSize() + " sq. m";
+            data[i][1] = lots.get(i).getBlock();
+            data[i][2] = "$" + lots.get(i).getPrice();
+            data[i][3] = lots.get(i).getStatus();
+        }
+
+        return data;
+    }
+
     // table for My Lots
     private void displayMyLotsTable() {
 
         DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();
-        
-        
+
         ArrayList<Lot> lots = lotlist.getLots();
-        
+
         Object rowData[] = new Object[100];
-        
+
         for (int i = 0; i < lots.size(); i++) {
-            
+
             rowData[0] = lots.get(i).getSize() + " sq. m";
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = "$" + lots.get(i).getPrice();
             rowData[3] = lots.get(i).isOwn();
             model.addRow(rowData);
-            
+
         }
-        
+
         // table sorter
-        TableRowSorter<DefaultTableModel> sortMyLot = new TableRowSorter<> (model);
+        TableRowSorter<DefaultTableModel> sortMyLot = new TableRowSorter<>(model);
         jTable_MyLots.setRowSorter(sortMyLot);
-        
+
         // hide 'Own?' column
         TableColumnModel columnModel = jTable_MyLots.getColumnModel();
         columnModel.removeColumn(columnModel.getColumn(3));
@@ -76,46 +89,35 @@ public class MainForm extends javax.swing.JFrame {
                 return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
             }
         });
-        
+
         // filter where isOwn = true
         sortMyLot.setRowFilter(RowFilter.regexFilter(Boolean.toString(true), 3));
     }
-    
+
     private void displaySearchTable() {
-        
-        DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
-       
+
+        Object[][] tableData = createSearchTableData();
+        DefaultTableModel model = new DefaultTableModel(tableData, new Object[]{"Size", "Block", "Price", "Status"});
+        jTable_Search.setModel(model);
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        jTable_Search.setRowSorter(sorter);
+
         //ConcreteClient lotlist = new ConcreteClient();
         ArrayList<Lot> lots = lotlist.getLots();
-        
-        Object rowData[] = new Object[100];
-        
-        for (int i = 0; i < lots.size(); i++) {
-            
-            rowData[0] = lots.get(i).getSize();
-            rowData[1] = lots.get(i).getBlock();
-            rowData[2] = lots.get(i).getPrice();
-            rowData[3] = lots.get(i).getStatus();
-            
-            model.addRow(rowData);
-            
-        }
-        
-        // table sorter
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
-        jTable_Search.setRowSorter(sorter);
-     
-        // filter array
-        List<RowFilter<Object,Object>> filters = new ArrayList<>();
-            // column filters
-            filters.add(0, RowFilter.numberFilter(ComparisonType.AFTER, 0, 0)); // size filter lower bound
-            filters.add(1, RowFilter.numberFilter(ComparisonType.BEFORE, 601, 0)); // size filter upper bount
-            filters.add(2, RowFilter.regexFilter("", 1)); // loc filter item
-            filters.add(3, RowFilter.numberFilter(ComparisonType.AFTER, 9999, 2)); // price filter lower bound
-            filters.add(4, RowFilter.numberFilter(ComparisonType.BEFORE, 600001, 2)); // price filter upper bount
-            filters.add(5, RowFilter.regexFilter("", 3)); // status filter item
 
-            
+        // table sorter
+        //TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        //jTable_Search.setRowSorter(sorter);
+        // filter array
+        List<RowFilter<Object, Object>> filters = new ArrayList<>();
+        // column filters
+        filters.add(0, RowFilter.numberFilter(ComparisonType.AFTER, 0, 0)); // size filter lower bound
+        filters.add(1, RowFilter.numberFilter(ComparisonType.BEFORE, 601, 0)); // size filter upper bount
+        filters.add(2, RowFilter.regexFilter("", 1)); // loc filter item
+        filters.add(3, RowFilter.numberFilter(ComparisonType.AFTER, 9999, 2)); // price filter lower bound
+        filters.add(4, RowFilter.numberFilter(ComparisonType.BEFORE, 600001, 2)); // price filter upper bount
+        filters.add(5, RowFilter.regexFilter("", 3)); // status filter item
+
         // size filter    
         drop_Size.addActionListener((ActionEvent event) -> {
             // if index == 0, show all; else apply filter
@@ -135,9 +137,8 @@ public class MainForm extends javax.swing.JFrame {
                 filters.set(1, RowFilter.numberFilter(ComparisonType.BEFORE, upperSize, 0));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
-        });    
-            
-            
+        });
+
         // Location filter
         drop_Loc.addActionListener((ActionEvent event) -> {
             // if index == 0, show all; else apply filter
@@ -149,7 +150,7 @@ public class MainForm extends javax.swing.JFrame {
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });
-             
+
         // price filter
         drop_Price.addActionListener((ActionEvent event) -> {
             // if index == 0, show all; else apply filter
@@ -163,14 +164,14 @@ public class MainForm extends javax.swing.JFrame {
                 // extract numbers and convert to int
                 String[] splitPrice = priceQuery.split("-");
                 int lowerPrice = Integer.parseInt(splitPrice[0].substring(1).replace(",", "")) - 1;
-                int upperPrice = Integer.parseInt(splitPrice[1].substring(1).replace(",", "")) + 1; 
+                int upperPrice = Integer.parseInt(splitPrice[1].substring(1).replace(",", "")) + 1;
                 // plug converted values in and filter
                 filters.set(3, RowFilter.numberFilter(ComparisonType.AFTER, lowerPrice, 2));
                 filters.set(4, RowFilter.numberFilter(ComparisonType.BEFORE, upperPrice, 2));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });
-        
+
         // Status filter
         drop_Stat.addActionListener((ActionEvent event) -> {
             // if index == 0, show all; else apply filter
@@ -182,7 +183,7 @@ public class MainForm extends javax.swing.JFrame {
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });
- 
+
     }
 
     /**
@@ -215,6 +216,7 @@ public class MainForm extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable_Search = new javax.swing.JTable();
+        button1 = new java.awt.Button();
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         btn_genRep = new javax.swing.JButton();
@@ -367,6 +369,13 @@ public class MainForm extends javax.swing.JFrame {
             jTable_Search.getColumnModel().getColumn(3).setResizable(false);
         }
 
+        button1.setLabel("button1");
+        button1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -392,17 +401,24 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(drop_Stat, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(117, 117, 117)
-                        .addComponent(jLabel3))
+                        .addComponent(jLabel3)
+                        .addGap(34, 34, 34)
+                        .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(16, 16, 16)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -502,15 +518,15 @@ public class MainForm extends javax.swing.JFrame {
 
     // generate report button, open ReportForm
     private void btn_genRepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_genRepActionPerformed
-        repform.setVisible(true);        
+        repform.setVisible(true);
     }//GEN-LAST:event_btn_genRepActionPerformed
 
     // select row; open BuyForm
     private void jTable_SearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_SearchMouseClicked
-        
+
         // get selected row
         int rowIndex = jTable_Search.getSelectedRow();
-        
+
         String rowSize = jTable_Search.getValueAt(rowIndex, 0).toString(); // get value from Size
         String rowLoc = jTable_Search.getValueAt(rowIndex, 1).toString(); // get value from Location
         String rowPrice = jTable_Search.getValueAt(rowIndex, 2).toString(); // get value from Price
@@ -533,12 +549,25 @@ public class MainForm extends javax.swing.JFrame {
             buyform.jtxt_Price.setText("$" + rowPrice);
         }
     }//GEN-LAST:event_jTable_SearchMouseClicked
+    private void refreshUI() {
+        Container container = this.getContentPane(); // Replace 'this' with the appropriate container if needed
+        displaySearchTable();
+        container.revalidate();
+        container.repaint();
+        System.out.println("lmao");
+
+    }
+    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
+        // TODO add your handling code here:
+        refreshUI();
+        System.out.println("refreshing");
+    }//GEN-LAST:event_button1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -565,14 +594,15 @@ public class MainForm extends javax.swing.JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                
+
                 new MainForm().setVisible(true);
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_genRep;
+    private java.awt.Button button1;
     private javax.swing.JComboBox<String> drop_Loc;
     private javax.swing.JComboBox<String> drop_Price;
     private javax.swing.JComboBox<String> drop_Size;
