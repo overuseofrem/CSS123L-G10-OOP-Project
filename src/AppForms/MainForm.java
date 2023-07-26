@@ -47,9 +47,9 @@ public class MainForm extends javax.swing.JFrame {
         Object[][] data = new Object[lots.size()][4];
 
         for (int i = 0; i < lots.size(); i++) {
-            data[i][0] = lots.get(i).getSize() + " sq. m";
+            data[i][0] = lots.get(i).getSize();
             data[i][1] = lots.get(i).getBlock();
-            data[i][2] = "$" + lots.get(i).getPrice();
+            data[i][2] = lots.get(i).getPrice();
             data[i][3] = lots.get(i).getStatus();
         }
 
