@@ -17,15 +17,17 @@ public class Lot {
     private String block; // "Block 1-5" or change to [int] if you just want the number
     private int price; // amend "$". if interested in decimals, use [double]
     private String status;// "Available", "Sold", "Reserved"
-    private boolean own; // user owns this lot?
+    private int own; // user owns this lot?
+    private int sno; // index
    
     // constructor
-    public Lot(int size, String block, int price, String status, boolean own) {
+    public Lot(int size, String block, int price, String status, int own, int sno) {
         this.size = size;
         this.block = block;
         this.price = price;
         this.status = status;
         this.own = own;
+        this.sno = sno;
     }
 
     //////// methods ////////
@@ -47,12 +49,16 @@ public class Lot {
         return status;
     }
 
-    public boolean isOwn() { // check if user owns this lot
+    public int isOwn() { // check if user owns this lot
         return own;
-}
+    }
         
+    public int getSno() { // get index
+        return sno;
+    }
+    
     // setters
-    public void setOwn(boolean own) { // set ownership
+    public void setOwn(int own) { // set ownership
         this.own = own;               // used to display at MyLots table
     }                                 // call and use when 
     

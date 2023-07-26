@@ -18,7 +18,8 @@ import javax.swing.table.TableRowSorter;
  */
 public class ReportForm extends javax.swing.JFrame {
 
-
+    ConcreteClient client = new ConcreteClient();
+    
     /**
      * Creates new form ReportForm
      */
@@ -29,13 +30,10 @@ public class ReportForm extends javax.swing.JFrame {
     }
     
     private void displayReportTable() {
-        
+        // get client array
+        ArrayList<Lot> lots = client.getLots() ;
         // initialize report model
         DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();
-       
-        // ConcreteClient instance and get array
-        ConcreteClient lot = new ConcreteClient();
-        ArrayList<Lot> lots = lot.getLots();
         
         // create table and insert array data
         Object rowData[] = new Object[100];
@@ -173,6 +171,6 @@ public class ReportForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable_Report;
+    public javax.swing.JTable jTable_Report;
     // End of variables declaration//GEN-END:variables
 }

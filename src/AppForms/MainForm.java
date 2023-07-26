@@ -8,10 +8,12 @@ package AppForms;
 
 import Libs.*;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.RowFilter.ComparisonType;
@@ -27,7 +29,8 @@ public class MainForm extends javax.swing.JFrame {
     
     // initialize branching forms
     ReportForm repform = new ReportForm();
-    ConcreteClient lot = new ConcreteClient();
+    ConcreteClient client = new ConcreteClient();
+    ConcreteObserver obs = new ConcreteObserver();
     
     /**
      * Creates new form MainForm
@@ -41,12 +44,12 @@ public class MainForm extends javax.swing.JFrame {
     // table for My Lots
     private void displayMyLotsTable() {
         
-        // initialize mylots model
-        DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();
+// get client array
+        ArrayList<Lot> lots = client.getLots() ;
         
-        // get lot array
-        ArrayList<Lot> lots = lot.getLots();
-        
+        // initialize myclients model
+        DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();  
+            
         // create table and insert array data
         Object rowData[] = new Object[100];
         
@@ -55,19 +58,16 @@ public class MainForm extends javax.swing.JFrame {
             rowData[0] = lots.get(i).getSize() + " sq. m";
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = "$" + lots.get(i).getPrice();
-            rowData[3] = lots.get(i).isOwn();
+            rowData[3] = lots.get(i).getStatus();
+            rowData[4] = lots.get(i).isOwn();
             model.addRow(rowData);
             
         }
-        
+
         // table sorter
         TableRowSorter<DefaultTableModel> sortMyLot = new TableRowSorter<> (model);
         jTable_MyLots.setRowSorter(sortMyLot);
         
-        // hide 'Own?' column
-        TableColumnModel columnModel = jTable_MyLots.getColumnModel();
-        columnModel.removeColumn(columnModel.getColumn(3));
-
         // sort values by numbers
         sortMyLot.setComparator(2, new Comparator<String>() {
             public int compare(String s1, String s2) {
@@ -75,49 +75,58 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         
+        // hides stat and own columns
+        TableColumnModel tcm = jTable_MyLots.getColumnModel();
+        tcm.removeColumn(tcm.getColumn(4));
+        tcm.removeColumn(tcm.getColumn(3));
+        
         // filter where isOwn = true
-        sortMyLot.setRowFilter(RowFilter.regexFilter(Boolean.toString(true), 3));
+        sortMyLot.setRowFilter(RowFilter.numberFilter(ComparisonType.EQUAL, 1));
         
     }
     
     // table for Search
     private void displaySearchTable() {
         
+        // get client array
+        ArrayList<Lot> lots = client.getLots() ;
+
         // initialize search model
         DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
-       
-        // get lot array
-        ArrayList<Lot> lots = lot.getLots();
-        
+
         // create table and insert array data
         Object rowData[] = new Object[100];
-        
+
         for (int i = 0; i < lots.size(); i++) {
-            
+
             rowData[0] = lots.get(i).getSize();
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = lots.get(i).getPrice();
             rowData[3] = lots.get(i).getStatus();
+            rowData[4] = lots.get(i).getSno();
             model.addRow(rowData);
-            
+
         }
-        
+        // hides stat and own columns
+        TableColumnModel hcm = jTable_Search.getColumnModel();
+        hcm.removeColumn(hcm.getColumn(4));
+
         // table sorter
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
         jTable_Search.setRowSorter(sorter);
-     
+
         // filter array
         List<RowFilter<Object,Object>> filters = new ArrayList<>();
-            // column filters
-            filters.add(0, RowFilter.numberFilter(ComparisonType.AFTER, 0, 0)); // size filter lower bound
-            filters.add(1, RowFilter.numberFilter(ComparisonType.BEFORE, 601, 0)); // size filter upper bount
-            filters.add(2, RowFilter.regexFilter("", 1)); // loc filter item
-            filters.add(3, RowFilter.numberFilter(ComparisonType.AFTER, 9999, 2)); // price filter lower bound
-            filters.add(4, RowFilter.numberFilter(ComparisonType.BEFORE, 600001, 2)); // price filter upper bount
-            filters.add(5, RowFilter.regexFilter("", 3)); // status filter item
+        // column filters
+        filters.add(0, RowFilter.numberFilter(ComparisonType.AFTER, 0, 0)); // size filter lower bound
+        filters.add(1, RowFilter.numberFilter(ComparisonType.BEFORE, 601, 0)); // size filter upper bount
+        filters.add(2, RowFilter.regexFilter("", 1)); // loc filter item
+        filters.add(3, RowFilter.numberFilter(ComparisonType.AFTER, 9999, 2)); // price filter lower bound
+        filters.add(4, RowFilter.numberFilter(ComparisonType.BEFORE, 600001, 2)); // price filter upper bount
+        filters.add(5, RowFilter.regexFilter("", 3)); // status filter item
 
-            
-        // size filter    
+
+        // size filter
         drop_Size.addActionListener((ActionEvent event) -> {
             // if index == 0, show all
             if (drop_Size.getSelectedIndex() == 0) {
@@ -136,9 +145,9 @@ public class MainForm extends javax.swing.JFrame {
                 filters.set(1, RowFilter.numberFilter(ComparisonType.BEFORE, upperSize, 0));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
-        });    
-            
-            
+        });
+
+
         // Location filter
         drop_Loc.addActionListener((ActionEvent event) -> {
             // if index == 0, show all
@@ -150,7 +159,7 @@ public class MainForm extends javax.swing.JFrame {
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });
-             
+
         // price filter
         drop_Price.addActionListener((ActionEvent event) -> {
             // if index == 0, show all
@@ -164,14 +173,14 @@ public class MainForm extends javax.swing.JFrame {
                 // extract numbers and convert to int
                 String[] splitPrice = priceQuery.split("-");
                 int lowerPrice = Integer.parseInt(splitPrice[0].substring(1).replace(",", "")) - 1;
-                int upperPrice = Integer.parseInt(splitPrice[1].substring(1).replace(",", "")) + 1; 
+                int upperPrice = Integer.parseInt(splitPrice[1].substring(1).replace(",", "")) + 1;
                 // plug converted values in and filter
                 filters.set(3, RowFilter.numberFilter(ComparisonType.AFTER, lowerPrice, 2));
                 filters.set(4, RowFilter.numberFilter(ComparisonType.BEFORE, upperPrice, 2));
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });
-        
+
         // Status filter
         drop_Stat.addActionListener((ActionEvent event) -> {
             // if index == 0, show all
@@ -183,7 +192,6 @@ public class MainForm extends javax.swing.JFrame {
                 sorter.setRowFilter(RowFilter.andFilter(filters));
             }
         });
- 
     }
 
     /**
@@ -217,7 +225,6 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable_Search = new javax.swing.JTable();
         jtxt_Price = new javax.swing.JTextField();
-        btn_ExitLot = new javax.swing.JButton();
         btn_ReserveLot = new javax.swing.JButton();
         btn_BuyLot = new javax.swing.JButton();
         jtxt_Size = new javax.swing.JTextField();
@@ -274,11 +281,11 @@ public class MainForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lot Size (Sq. m)", "Location", "Price", "Own?"
+                "Lot Size (Sq. m)", "Location", "Price", "Status", "Own"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -292,6 +299,7 @@ public class MainForm extends javax.swing.JFrame {
             jTable_MyLots.getColumnModel().getColumn(1).setResizable(false);
             jTable_MyLots.getColumnModel().getColumn(2).setResizable(false);
             jTable_MyLots.getColumnModel().getColumn(3).setResizable(false);
+            jTable_MyLots.getColumnModel().getColumn(4).setResizable(false);
         }
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -352,11 +360,11 @@ public class MainForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lot Size (Sq. m)", "Location", "Price (USD, $)", "Status"
+                "Lot Size (Sq. m)", "Location", "Price (USD, $)", "Status", "Sno"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -375,19 +383,12 @@ public class MainForm extends javax.swing.JFrame {
             jTable_Search.getColumnModel().getColumn(1).setResizable(false);
             jTable_Search.getColumnModel().getColumn(2).setResizable(false);
             jTable_Search.getColumnModel().getColumn(3).setResizable(false);
+            jTable_Search.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jtxt_Price.setEditable(false);
         jtxt_Price.setFont(new java.awt.Font("Fira Code", 2, 14)); // NOI18N
         jtxt_Price.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        btn_ExitLot.setFont(new java.awt.Font("Fira Code", 1, 14)); // NOI18N
-        btn_ExitLot.setText("No, exit");
-        btn_ExitLot.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ExitLotActionPerformed(evt);
-            }
-        });
 
         btn_ReserveLot.setFont(new java.awt.Font("Fira Code", 1, 14)); // NOI18N
         btn_ReserveLot.setText("Reserve Lot");
@@ -454,27 +455,25 @@ public class MainForm extends javax.swing.JFrame {
                             .addComponent(jtxt_Size, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(51, 51, 51)
-                                .addComponent(jLabel11))
-                            .addComponent(btn_BuyLot, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel11)))
+                        .addGap(21, 21, 21)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addGap(9, 9, 9)
                                 .addComponent(jtxt_Loc, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(8, 8, 8))
-                            .addComponent(btn_ReserveLot, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addGap(45, 45, 45)))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btn_ExitLot, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jtxt_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jtxt_Price, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(66, 66, 66)
-                                .addComponent(jLabel13)))))
+                                .addComponent(jLabel13))))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(138, 138, 138)
+                        .addComponent(btn_BuyLot, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(btn_ReserveLot, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(26, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -520,8 +519,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_BuyLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_ReserveLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_ExitLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_ReserveLot, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(38, 38, 38))
         );
 
@@ -616,7 +614,7 @@ public class MainForm extends javax.swing.JFrame {
 
         // if !Available, show dialogue box; else open BuyForm
         if (!"Available".equals(jTable_Search.getValueAt(rowIndex, 3).toString())) {
-            JOptionPane.showMessageDialog(null, "Sorry, this lot as already been " + rowStat + ".");
+            JOptionPane.showMessageDialog(null, "Sorry, this client as already been " + rowStat + ".");
         } else {
             // show on jtxt
             jtxt_Size.setText(rowSize + " sq. m");
@@ -625,43 +623,66 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTable_SearchMouseClicked
 
-    private void btn_ExitLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExitLotActionPerformed
-        dispose();
-    }//GEN-LAST:event_btn_ExitLotActionPerformed
-
     private void btn_ReserveLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReserveLotActionPerformed
-        // TODO add your handling code here:
-//        ArrayList<Lot> lots = lot.getLots();
-//        lot.buyLot();
-        DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
-            
-            if (jTable_Search.getSelectedRowCount() == 1 ) {
-                jTable_Search.setValueAt("Reserved", jTable_Search.getSelectedRow(), 3);
-                JOptionPane.showMessageDialog(this, "Lot reserved successfully!");
-            } else if (jTable_Search.getSelectedRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "Please select a lot.");
-            }
+  
+        if (jTable_Search.getSelectedRowCount() == 1 && "Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString()) ) {
 
+            try {
+                    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                    Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=CSS123LOOP;user=sa;password=123;encrypt=true;trustServerCertificate=true;");           
+
+                    int rowIndex = jTable_Search.getSelectedRow();
+                    String value = (jTable_Search.getModel().getValueAt(rowIndex, 4).toString());
+                    PreparedStatement pst = con.prepareStatement("UPDATE LOT SET status = ?, own = 'TRUE' WHERE sno = " + value);
+                    pst.setString(1, "Reserved");
+                    pst.executeUpdate();   
+                    
+                    jTable_Search.setValueAt("Reserved", jTable_Search.getSelectedRow(), 3);      
+                    jTable_MyLots.setValueAt(1, jTable_MyLots.getSelectedRow(), 3); 
+                    client.reserveLot();
+                    client.notifyClient();
+                    obs.update();
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex);
+                } 
+
+        } else if (jTable_Search.getSelectedRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Please select a lot.");
+        } else if (!"Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString())) {
+            JOptionPane.showMessageDialog(null, "You can't buy this lot! Please choose another one.");
+        }
 
     }//GEN-LAST:event_btn_ReserveLotActionPerformed
 
     private void btn_BuyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuyLotActionPerformed
-        // TODO add your handling code here:
-        //buyLot();
-        //ConcreteClient client = new ConcreteClient();
-//        ArrayList<Lot> lots = lot.getLots();
-//        lot.buyLot();
+        
+        if (jTable_Search.getSelectedRowCount() == 1 && "Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString()) ) {
 
-            if (jTable_Search.getSelectedRowCount() == 1 ) {
-                jTable_Search.setValueAt("Sold", jTable_Search.getSelectedRow(), 3);
-                JOptionPane.showMessageDialog(this, "Lot bought successfully!");
-            } else if (jTable_Search.getSelectedRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "Please select a lot.");
-            }
+            try {
+                    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                    Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=CSS123LOOP;user=sa;password=123;encrypt=true;trustServerCertificate=true;");           
 
-        // Optionally, you can display a message to the user after buying the lot
-        JOptionPane.showMessageDialog(this, "Lot bought successfully!");
+                    int rowIndex = jTable_Search.getSelectedRow();
+                    String value = (jTable_Search.getModel().getValueAt(rowIndex, 4).toString());
+                    PreparedStatement pst = con.prepareStatement("UPDATE LOT SET status = ?, own = 'TRUE' WHERE sno = " + value);
+                    pst.setString(1, "Sold");
+                    pst.executeUpdate();   
+                    
+                    jTable_Search.setValueAt("Sold", jTable_Search.getSelectedRow(), 3);      
+                    client.buyLot();
+                    client.notifyClient();
+                    obs.update();
 
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex);
+                } 
+
+        } else if (jTable_Search.getSelectedRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Please select a lot.");
+        } else if (!"Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString())) {
+            JOptionPane.showMessageDialog(null, "You can't buy this lot! Please choose another one.");
+        }
     }//GEN-LAST:event_btn_BuyLotActionPerformed
 
     /**
@@ -701,7 +722,6 @@ public class MainForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuyLot;
-    private javax.swing.JButton btn_ExitLot;
     private javax.swing.JButton btn_ReserveLot;
     private javax.swing.JButton btn_genRep;
     private javax.swing.JComboBox<String> drop_Loc;
@@ -729,7 +749,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable_MyLots;
+    public javax.swing.JTable jTable_MyLots;
     public javax.swing.JTable jTable_Search;
     public javax.swing.JTextField jtxt_Loc;
     public javax.swing.JTextField jtxt_Price;

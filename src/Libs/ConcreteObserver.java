@@ -5,6 +5,8 @@
  */
 package Libs;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ASUS
@@ -12,10 +14,8 @@ package Libs;
 public class ConcreteObserver implements Observer {
 
     @Override
-    public void update() {
-        
-        // check if isOwn = false, set to true
-        
+    public void update() { 
+        JOptionPane.showMessageDialog(null, "Please restart Dirt Stock to see changes.");
     }
     
 }
