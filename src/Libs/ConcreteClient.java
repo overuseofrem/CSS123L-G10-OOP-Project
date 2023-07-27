@@ -1,60 +1,91 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Libs;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import AppForms.MainForm;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author ASUS
- */
 public class ConcreteClient implements Client {
 
-    private ArrayList<Lot> lots = new ArrayList<> ();
+    private ArrayList<Lot> lots = new ArrayList<>();
 
-    // array & getter
+    // Constructor to initialize lots
+    public ConcreteClient() {
+        // Add hard-coded lots to the ArrayList
+        // Format: Lot(size, block, price, status, own, sno)
+        lots.add(new Lot(100, "A1", 50000, "Available", 0, 1));
+        lots.add(new Lot(200, "B2", 75000, "Available", 0, 2));
+        lots.add(new Lot(150, "C3", 60000, "Reserved", 1, 3));
+    }
+
+    // Getter for lots
     public ArrayList<Lot> getLots() {
-        // SQL db
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=CSS123LOOP;user=sa;password=123;encrypt=true;trustServerCertificate=true;");
-            String query1 = "SELECT * FROM LOT";
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(query1);
-            while (rs.next()) {
-                Lot lot;
-                lot = new Lot(rs.getInt("size"), rs.getString("block"), rs.getInt("price"), rs.getString("status"), rs.getInt("own"), rs.getInt("sno"));
-                lots.add(lot);
-            }            
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex);
-        } 
+        return lots;
+    }
 
-    return lots;
+  public void reserveLot(int rowIndex, MainForm mainForm) {
+    if (rowIndex >= 0 && "Available".equals(mainForm.getValueAtSearchTable(rowIndex, 3).toString())) {
+        Lot selectedLot = lots.get(rowIndex);
+
+        // Check if the 'own' count is less than 1
+        if (selectedLot.getOwn() >= 1) {
+            JOptionPane.showMessageDialog(null, "You can't reserve this lot! Please choose another one.");
+            return; // Do not proceed with the reservation
+        }
+
+        // Increment the own count for the selected lot
+        selectedLot.setOwn(selectedLot.getOwn() + 1);
+
+        // Update the status to "Reserved" in the ArrayList
+        selectedLot.setStatus("Reserved");
+
+        // Notify the client
+        JOptionPane.showMessageDialog(null, "Lot reserved successfully!");
+
+        // Refresh the "My Lots" table to reflect the changes in MainForm
+        mainForm.displayMyLotsTable();
+    } else {
+        JOptionPane.showMessageDialog(null, "You can't reserve this lot! Please choose another one.");
+    }
 }
-    
-    // abstract methods
-    @Override
-    public void buyLot() {   
+
+public void buyLot(int rowIndex, MainForm mainForm) {
+    if (rowIndex >= 0 && "Available".equals(mainForm.getValueAtSearchTable(rowIndex, 3).toString())) {
+        Lot selectedLot = lots.get(rowIndex);
+
+        // Check if the 'own' count is less than 1
+        if (selectedLot.getOwn() >= 1) {
+            JOptionPane.showMessageDialog(null, "You can't buy this lot! Please choose another one.");
+            return; // Do not proceed with the purchase
+        }
+
+        // Increment the own count for the selected lot
+        selectedLot.setOwn(selectedLot.getOwn() + 1);
+
+        // Update the status to "Sold" in the ArrayList
+        selectedLot.setStatus("Sold");
+
+        // Notify the client
         JOptionPane.showMessageDialog(null, "Lot bought successfully!");
+
+        // Refresh the "My Lots" table to reflect the changes in MainForm
+        mainForm.displayMyLotsTable();
+    } else {
+        JOptionPane.showMessageDialog(null, "You can't buy this lot! Please choose another one.");
+    }
+}
+
+    @Override
+    public void notifyClient() {
+        JOptionPane.showMessageDialog(null, "Lot added to your My Lots tab.");
+    }
+
+    @Override
+    public void buyLot() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void reserveLot() {
-        JOptionPane.showMessageDialog(null, "Lot reserved successfully!");
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
-    @Override
-    public void notifyClient() {
-       JOptionPane.showMessageDialog(null, "Lot added to your My Lots tab.");
-    }
-    
 }
