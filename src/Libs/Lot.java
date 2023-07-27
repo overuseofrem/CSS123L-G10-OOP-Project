@@ -65,6 +65,9 @@ public class Lot {
     public void setStatus(String status) { // set lot status
     this.status = status;              // use when buying/reserving
 }                                      // call and use to modify
-        
+  
+    public int getOwn() {
+        return own;
+    }      
 
 }
