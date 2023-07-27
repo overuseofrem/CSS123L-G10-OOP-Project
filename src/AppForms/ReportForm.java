@@ -34,7 +34,6 @@ public class ReportForm extends javax.swing.JFrame implements Observer {
     }
 
     public void update() {
-        System.out.println("REFRESHING REPORT FORM");
         this.refreshUI();
     }
     
@@ -49,6 +48,15 @@ public class ReportForm extends javax.swing.JFrame implements Observer {
         DefaultTableModel model = (DefaultTableModel) jTable_Report.getModel();
 
         Object rowData[] = new Object[100];
+        
+        int rows = model.getRowCount();
+        
+        if(rows > 0) {
+            while(rows > 0) {
+                model.removeRow(0);
+                rows--;
+            }
+        } 
 
         for (int i = 0; i < lots.size(); i++) {
 

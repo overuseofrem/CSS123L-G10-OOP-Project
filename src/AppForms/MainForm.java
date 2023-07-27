@@ -29,7 +29,6 @@ public class MainForm extends javax.swing.JFrame implements Observer{
       
     @Override
     public void update() {
-        System.out.println("REFRESHINH MAINFORM");
         this.refreshUI();
     };
     
@@ -43,8 +42,6 @@ public class MainForm extends javax.swing.JFrame implements Observer{
     public MainForm() {
         lotlist = new ConcreteClient(); //pass the observer class as parameter
         repform = new ReportForm(lotlist);
-        System.out.println("LOTLIST : " + lotlist);
-        System.out.println("THIS OBJECT : " + this);
         lotlist.attach(this); 
         
         initComponents();
@@ -535,7 +532,6 @@ public class MainForm extends javax.swing.JFrame implements Observer{
         String rowLoc = jTable_Search.getValueAt(rowIndex, 1).toString(); // get value from Location
         String rowPrice = jTable_Search.getValueAt(rowIndex, 2).toString(); // get value from Price
         String rowStat = jTable_Search.getValueAt(rowIndex, 3).toString().toLowerCase(); // get value from Status
-        System.out.println("CLICKED ROW " + rowIndex);
         // if !Available, show dialogue box; else open BuyForm
         if (!"Available".equals(jTable_Search.getValueAt(rowIndex, 3).toString())) {
             JOptionPane.showMessageDialog(null, "Sorry, this lot as already been " + rowStat + ".", "Error", JOptionPane.ERROR_MESSAGE);
