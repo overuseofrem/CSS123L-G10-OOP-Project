@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author ASUS
  */
 public interface Client {
-    
+        
     void buyLot();
     
     void reserveLot();

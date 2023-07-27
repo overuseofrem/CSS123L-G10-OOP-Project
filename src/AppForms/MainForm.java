@@ -18,19 +18,24 @@ import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.RowFilter.ComparisonType;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author ASUS
  */
-public class MainForm extends javax.swing.JFrame {
+public class MainForm extends javax.swing.JFrame implements Observer {
     
     // initialize branching forms
     ReportForm repform = new ReportForm();
     ConcreteClient client = new ConcreteClient();
-    ConcreteObserver obs = new ConcreteObserver();
+    
+    // updates tables
+    @Override
+    public void update() {
+        displayMyLotsTable();
+        repform.displayReportTable();
+    }
     
     /**
      * Creates new form MainForm
@@ -44,24 +49,20 @@ public class MainForm extends javax.swing.JFrame {
     // table for My Lots
     private void displayMyLotsTable() {
         
-// get client array
+        // get lot array
         ArrayList<Lot> lots = client.getLots() ;
         
         // initialize myclients model
-        DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();  
-            
-        // create table and insert array data
-        Object rowData[] = new Object[100];
+        DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();    
         
+        // create table and insert array data       
         for (int i = 0; i < lots.size(); i++) {
-
+            Object[] rowData = new Object[lots.size()];
             rowData[0] = lots.get(i).getSize() + " sq. m";
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = "$" + lots.get(i).getPrice();
-            rowData[3] = lots.get(i).getStatus();
-            rowData[4] = lots.get(i).isOwn();
+            rowData[3] = lots.get(i).isOwn();
             model.addRow(rowData);
-            
         }
 
         // table sorter
@@ -75,13 +76,15 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         
-        // hides stat and own columns
-        TableColumnModel tcm = jTable_MyLots.getColumnModel();
-        tcm.removeColumn(tcm.getColumn(4));
-        tcm.removeColumn(tcm.getColumn(3));
+        // hides columns
+        jTable_MyLots.getColumnModel().getColumn(3).setMinWidth(0);
+        jTable_MyLots.getColumnModel().getColumn(3).setMaxWidth(0);
+
         
         // filter where isOwn = true
-        sortMyLot.setRowFilter(RowFilter.numberFilter(ComparisonType.EQUAL, 1));
+        sortMyLot.setRowFilter(RowFilter.numberFilter(ComparisonType.EQUAL, 1, 3));
+        // data changed, refresh table
+        model.fireTableDataChanged();
         
     }
     
@@ -95,21 +98,19 @@ public class MainForm extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) jTable_Search.getModel();
 
         // create table and insert array data
-        Object rowData[] = new Object[100];
-
         for (int i = 0; i < lots.size(); i++) {
-
+            Object[] rowData = new Object[100];
             rowData[0] = lots.get(i).getSize();
             rowData[1] = lots.get(i).getBlock();
             rowData[2] = lots.get(i).getPrice();
             rowData[3] = lots.get(i).getStatus();
             rowData[4] = lots.get(i).getSno();
             model.addRow(rowData);
-
         }
-        // hides stat and own columns
-        TableColumnModel hcm = jTable_Search.getColumnModel();
-        hcm.removeColumn(hcm.getColumn(4));
+
+        // hides columns
+        jTable_Search.getColumnModel().getColumn(4).setMinWidth(0);
+        jTable_Search.getColumnModel().getColumn(4).setMaxWidth(0);
 
         // table sorter
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<> (model);
@@ -281,11 +282,11 @@ public class MainForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lot Size (Sq. m)", "Location", "Price", "Status", "Own"
+                "Lot Size (Sq. m)", "Location", "Price", "Own"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -299,7 +300,6 @@ public class MainForm extends javax.swing.JFrame {
             jTable_MyLots.getColumnModel().getColumn(1).setResizable(false);
             jTable_MyLots.getColumnModel().getColumn(2).setResizable(false);
             jTable_MyLots.getColumnModel().getColumn(3).setResizable(false);
-            jTable_MyLots.getColumnModel().getColumn(4).setResizable(false);
         }
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -624,7 +624,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable_SearchMouseClicked
 
     private void btn_ReserveLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReserveLotActionPerformed
-  
+        // if a lot is selected && status = "Available", proceed.
         if (jTable_Search.getSelectedRowCount() == 1 && "Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString()) ) {
 
             try {
@@ -632,21 +632,22 @@ public class MainForm extends javax.swing.JFrame {
                     Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=CSS123LOOP;user=sa;password=123;encrypt=true;trustServerCertificate=true;");           
 
                     int rowIndex = jTable_Search.getSelectedRow();
-                    String value = (jTable_Search.getModel().getValueAt(rowIndex, 4).toString());
+                    int modelRow = jTable_Search.convertRowIndexToModel(rowIndex);
+                    String value = (jTable_Search.getModel().getValueAt(modelRow, 4).toString());
+                    
                     PreparedStatement pst = con.prepareStatement("UPDATE LOT SET status = ?, own = 'TRUE' WHERE sno = " + value);
                     pst.setString(1, "Reserved");
-                    pst.executeUpdate();   
+                    pst.executeUpdate(); 
                     
-                    jTable_Search.setValueAt("Reserved", jTable_Search.getSelectedRow(), 3);      
-                    jTable_MyLots.setValueAt(1, jTable_MyLots.getSelectedRow(), 3); 
+                    jTable_Search.setValueAt("Reserved", jTable_Search.getSelectedRow(), 3);
+                    update();
+                    
                     client.reserveLot();
-                    client.notifyClient();
-                    obs.update();
 
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex);
                 } 
-
+        // else show dialogue
         } else if (jTable_Search.getSelectedRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Please select a lot.");
         } else if (!"Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString())) {
@@ -656,7 +657,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_ReserveLotActionPerformed
 
     private void btn_BuyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuyLotActionPerformed
-        
+        // if a lot is selected && status = "Available", proceed.
         if (jTable_Search.getSelectedRowCount() == 1 && "Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString()) ) {
 
             try {
@@ -664,20 +665,22 @@ public class MainForm extends javax.swing.JFrame {
                     Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=CSS123LOOP;user=sa;password=123;encrypt=true;trustServerCertificate=true;");           
 
                     int rowIndex = jTable_Search.getSelectedRow();
-                    String value = (jTable_Search.getModel().getValueAt(rowIndex, 4).toString());
+                    int modelRow = jTable_Search.convertRowIndexToModel(rowIndex);
+                    String value = (jTable_Search.getModel().getValueAt(modelRow, 4).toString());
+                    
                     PreparedStatement pst = con.prepareStatement("UPDATE LOT SET status = ?, own = 'TRUE' WHERE sno = " + value);
                     pst.setString(1, "Sold");
                     pst.executeUpdate();   
                     
-                    jTable_Search.setValueAt("Sold", jTable_Search.getSelectedRow(), 3);      
+                    jTable_Search.setValueAt("Sold", jTable_Search.getSelectedRow(), 3);
+                    update();  
+                    
                     client.buyLot();
-                    client.notifyClient();
-                    obs.update();
 
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex);
                 } 
-
+        // else show dialogue
         } else if (jTable_Search.getSelectedRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Please select a lot.");
         } else if (!"Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString())) {

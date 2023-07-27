@@ -29,27 +29,31 @@ public class ConcreteClient implements Client {
             String query1 = "SELECT * FROM LOT";
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query1);
+            
             while (rs.next()) {
                 Lot lot;
                 lot = new Lot(rs.getInt("size"), rs.getString("block"), rs.getInt("price"), rs.getString("status"), rs.getInt("own"), rs.getInt("sno"));
                 lots.add(lot);
             }            
+            rs.close();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
         } 
 
-    return lots;
-}
+        return lots;
+    }
     
     // abstract methods
     @Override
     public void buyLot() {   
         JOptionPane.showMessageDialog(null, "Lot bought successfully!");
+        this.notifyClient();
     }
 
     @Override
     public void reserveLot() {
         JOptionPane.showMessageDialog(null, "Lot reserved successfully!");
+        this.notifyClient();
     }
 
     @Override
