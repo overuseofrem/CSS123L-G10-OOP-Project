@@ -42,38 +42,38 @@ public class MainForm extends javax.swing.JFrame {
     }
     
     // table for My Lots
-  public void displayMyLotsTable() {
-     ConcreteClient client = this.client;
-     
-    // Initialize myclients model
-    DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();
+    private void displayMyLotsTable() {
+        
+// get client array
+        ArrayList<Lot> lots = client.getLots() ;
+        
+        // initialize myclients model
+        DefaultTableModel model = (DefaultTableModel) jTable_MyLots.getModel();  
+            
+        // create table and insert array data
+        Object rowData[] = new Object[100];
+        
+        for (int i = 0; i < lots.size(); i++) {
 
-    // Clear the existing data in the "My Lots" table
-    model.setRowCount(0);
-
-    // Create table and insert array data for lots with own=1
-    for (Lot lot : client.getLots()) {
-        if (lot.getOwn() >= 1) {
-            Object[] rowData = new Object[5];
-            rowData[0] = lot.getSize() + " sq. m";
-            rowData[1] = lot.getBlock();
-            rowData[2] = "$" + lot.getPrice();
-            rowData[3] = lot.getStatus();
-            rowData[4] = lot.isOwn();
+            rowData[0] = lots.get(i).getSize() + " sq. m";
+            rowData[1] = lots.get(i).getBlock();
+            rowData[2] = "$" + lots.get(i).getPrice();
+            rowData[3] = lots.get(i).getStatus();
+            rowData[4] = lots.get(i).isOwn();
             model.addRow(rowData);
+            
         }
-    }
 
-    // Table sorter
-    TableRowSorter<DefaultTableModel> sortMyLot = new TableRowSorter<>(model);
-    jTable_MyLots.setRowSorter(sortMyLot);
-
-    // Sort values by numbers
-    sortMyLot.setComparator(2, new Comparator<String>() {
-        public int compare(String s1, String s2) {
-            return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
-        }
-    });
+        // table sorter
+        TableRowSorter<DefaultTableModel> sortMyLot = new TableRowSorter<> (model);
+        jTable_MyLots.setRowSorter(sortMyLot);
+        
+        // sort values by numbers
+        sortMyLot.setComparator(2, new Comparator<String>() {
+            public int compare(String s1, String s2) {
+                return Integer.compare(Integer.parseInt(s1.replaceAll("[^\\d]", "")), Integer.parseInt(s2.replaceAll("[^\\d]", "")));
+            }
+        });
         
         // hides stat and own columns
         TableColumnModel tcm = jTable_MyLots.getColumnModel();
@@ -624,14 +624,65 @@ public class MainForm extends javax.swing.JFrame {
     }                                          
 
     private void btn_ReserveLotActionPerformed(java.awt.event.ActionEvent evt) {                                               
- int rowIndex = jTable_Search.getSelectedRow();
-    client.reserveLot(rowIndex, this);
+  
+        if (jTable_Search.getSelectedRowCount() == 1 && "Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString()) ) {
+
+            try {
+                    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                    Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=CSS123LOOP;user=sa;password=123;encrypt=true;trustServerCertificate=true;");           
+
+                    int rowIndex = jTable_Search.getSelectedRow();
+                    String value = (jTable_Search.getModel().getValueAt(rowIndex, 4).toString());
+                    PreparedStatement pst = con.prepareStatement("UPDATE LOT SET status = ?, own = 'TRUE' WHERE sno = " + value);
+                    pst.setString(1, "Reserved");
+                    pst.executeUpdate();   
+                    
+                    jTable_Search.setValueAt("Reserved", jTable_Search.getSelectedRow(), 3);      
+                    jTable_MyLots.setValueAt(1, jTable_MyLots.getSelectedRow(), 3); 
+                    client.reserveLot();
+                    client.notifyClient();
+                    obs.update();
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex);
+                } 
+
+        } else if (jTable_Search.getSelectedRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Please select a lot.");
+        } else if (!"Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString())) {
+            JOptionPane.showMessageDialog(null, "You can't buy this lot! Please choose another one.");
+        }
+
     }                                              
 
     private void btn_BuyLotActionPerformed(java.awt.event.ActionEvent evt) {                                           
-int rowIndex = jTable_Search.getSelectedRow();
-    client.buyLot(rowIndex, this);
- 
+        
+        if (jTable_Search.getSelectedRowCount() == 1 && "Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString()) ) {
+
+            try {
+                    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                    Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=CSS123LOOP;user=sa;password=123;encrypt=true;trustServerCertificate=true;");           
+
+                    int rowIndex = jTable_Search.getSelectedRow();
+                    String value = (jTable_Search.getModel().getValueAt(rowIndex, 4).toString());
+                    PreparedStatement pst = con.prepareStatement("UPDATE LOT SET status = ?, own = 'TRUE' WHERE sno = " + value);
+                    pst.setString(1, "Sold");
+                    pst.executeUpdate();   
+                    
+                    jTable_Search.setValueAt("Sold", jTable_Search.getSelectedRow(), 3);      
+                    client.buyLot();
+                    client.notifyClient();
+                    obs.update();
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex);
+                } 
+
+        } else if (jTable_Search.getSelectedRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Please select a lot.");
+        } else if (!"Available".equals(jTable_Search.getValueAt(jTable_Search.getSelectedRow(), 3).toString())) {
+            JOptionPane.showMessageDialog(null, "You can't buy this lot! Please choose another one.");
+        }
     }                                          
 
     /**
@@ -704,8 +755,4 @@ int rowIndex = jTable_Search.getSelectedRow();
     public javax.swing.JTextField jtxt_Price;
     public javax.swing.JTextField jtxt_Size;
     // End of variables declaration                   
-
-   public Object getValueAtSearchTable(int rowIndex, int columnIndex) {
-    return jTable_Search.getValueAt(rowIndex, columnIndex);
-}
 }
